@@ -20,6 +20,9 @@ export const Header = () => {
             <li>
               <NavLink to="/chart">Chart</NavLink>
             </li>
+            <li>
+              <NavLink to="/pollutionMapTest">Pollution Map TEST</NavLink>
+            </li>
           </ul>
         </nav>
         <button>
