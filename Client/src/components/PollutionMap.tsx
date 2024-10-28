@@ -6,7 +6,7 @@ import {
   useMap,
   Tooltip,
 } from "react-leaflet";
-import { germanData } from "../data/germanData";
+import { germanData } from "../data/europe/germanData";
 import "leaflet/dist/leaflet.css";
 import "@geoapify/leaflet-address-search-plugin/dist/L.Control.GeoapifyAddressSearch.min.css";
 import { locations } from "../data/locations";
