@@ -14,6 +14,7 @@ import "@geoapify/leaflet-address-search-plugin";
 import { useEffect, useRef, useState } from "react";
 import { ILocations } from "../models/ILocations";
 import L from "leaflet";
+import axios from "axios";
 
 const MapUpdater = ({ center }: { center: [number, number] }) => {
   const map = useMap();
@@ -37,6 +38,23 @@ export const PollutionMap = () => {
     between50and150: true,
     over150: true,
   });
+  const [places, setPlaces] = useState<ILocations[]>([]);
+
+  useEffect(() => {
+    const fetchData = async (): Promise<ILocations[]> => {
+      try {
+        const response = await axios.get("http://localhost:3000/nightingale2");
+        setPlaces(response.data);
+        return response.data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return []
+      }
+    };
+    fetchData();
+  }, []);
+
+  console.log("Hämtad data", places);
 
   const handleSearch = () => {
     if (!searchValue.trim()) {
@@ -74,7 +92,12 @@ export const PollutionMap = () => {
     return "#580822";
   };
 
-  const filteredLocations = locations.filter((location: ILocations) => {
+  const filteredLocations = places.filter((location: ILocations) => {
+    if (!location.data) {
+      console.warn(`Location data is undefined for:`, location);
+      return false;
+      
+    }
     const value = location.data.value;
     const color = getMarkerColor(value);
 
@@ -214,6 +237,26 @@ export const PollutionMap = () => {
                 <strong>PM₂.₅:</strong> {location.data.value.toFixed(2)}{" "}
                 <strong>Date: </strong>
                 {location.data.date}
+              </Popup>
+            </CircleMarker>
+          ))}
+
+          {places.map((place, index) => (
+            <CircleMarker
+              key={index}
+              center={place.center}
+              radius={1.5}
+              fillColor="transparent"
+              color={getMarkerColor(place.data.value)}
+              weight={9}
+              stroke={true}
+            >
+              <Popup>
+                <strong>{place.country}</strong>
+                <br />
+                <strong>PM₂.₅:</strong> {place.data.value.toFixed(2)}{" "}
+                <strong>Date: </strong>
+                {place.data.date}
               </Popup>
             </CircleMarker>
           ))}
