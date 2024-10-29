@@ -23,6 +23,9 @@ export const Header = () => {
             <li>
               <NavLink to="/pollutionMapTest">Pollution Map TEST</NavLink>
             </li>
+            <li>
+              <NavLink to="/pollutionTEST">POLLUTION TEST</NavLink>
+            </li>
           </ul>
         </nav>
         <button>
