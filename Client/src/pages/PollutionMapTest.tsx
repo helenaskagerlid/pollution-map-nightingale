@@ -8,11 +8,13 @@ export const PollutionMapTest = () => {
   const [places, setPlaces] = useState<IPlaces[]>([]);
 
   const getMarkerColor = (value: number) => {
-    if (value < 12.5) return "#8EFF44";
-    if (value < 25) return "#F8FF73";
-    if (value < 50) return "#FFB24D";
-    if (value < 150) return "#DE0C4A";
-    return "#580822";
+    if (value < 5) return "#71A3FF";
+    if (value < 10) return "#8EFF44";
+    if (value < 15) return "#F8FF73";
+    if (value < 25) return "#FFB24D";
+    if (value < 35) return "#DE0C4A";
+    if (value < 50) return "#8F154A";
+    return "#8B4DB0";
   };
 
   // useEffect(() => {
@@ -88,7 +90,7 @@ export const PollutionMapTest = () => {
 
           <img
             className="grade-image"
-            src="../../src/assets/grade.png"
+            src="../../src/assets/grade4.png"
             alt="Scale of PM2.5"
           />
         </div>

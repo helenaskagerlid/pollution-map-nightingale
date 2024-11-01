@@ -170,8 +170,9 @@ ul {
   justify-content: center;
 }
 
-img {
+.pollution-guide-img {
   width: 400px;
+  border: 2px solid rgb(76, 73, 73);
 }
 
 .map-container {

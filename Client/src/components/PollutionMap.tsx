@@ -265,7 +265,8 @@ export const PollutionMap = () => {
         </p>
         <div className="image-container">
           <img
-            src="../../src/assets/pollutionguide.png"
+          className="pollution-guide-img"
+            src="../../src/assets/pollutionguide3.png"
             alt="Pollution guide"
           />
         </div>
