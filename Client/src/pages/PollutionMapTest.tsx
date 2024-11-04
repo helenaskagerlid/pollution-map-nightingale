@@ -67,6 +67,23 @@ export const PollutionMapTest = () => {
         setPopupPosition(nearestLatLng);
         setPopupVisible(true);
         map.setView(nearestLatLng, 10);
+
+        const popup = L.popup();
+        if (popup) {
+          popup.setLatLng(nearestLatLng);
+          popup
+            .setContent(
+              `
+            <strong>Nearest Measurement Point:</strong><br/>
+            Latitude: ${nearest.latitude.toFixed(
+              4
+            )}, Longitude: ${nearest.longitude.toFixed(4)}<br/>
+            <strong>PM₂.₅:</strong> ${nearest.value.toFixed(2)}<br/>
+            <strong>Date:</strong> ${nearest.date}
+          `
+            )
+            .openOn(map);
+        }
       }
     });
 
@@ -89,9 +106,7 @@ export const PollutionMapTest = () => {
         nearest = place;
       }
     });
-      return nearest;
-
-
+    return nearest;
   };
 
   console.log("Hämtad data", places);
@@ -143,7 +158,7 @@ export const PollutionMapTest = () => {
               >
                 <Popup>
                   <strong>{place.country}</strong>
-                  <br />                  
+                  <br />
                   <strong>PM₂.₅:</strong> {place.value.toFixed(2)}{" "}
                   <strong>Date: </strong>
                   {place.date}
@@ -152,24 +167,26 @@ export const PollutionMapTest = () => {
             ))}
 
             {nearestPlace && userLocation && popupPosition && popupVisible && (
-              <CircleMarker center={[nearestPlace.latitude, nearestPlace.longitude]}
-              radius={5}
-              fillColor="transparent"
-              color="#FF0000"
-              weight={5}
-              stroke={true}>
+              <CircleMarker
+                center={[nearestPlace.latitude, nearestPlace.longitude]}
+                radius={5}
+                fillColor="transparent"
+                color="#FF0000"
+                weight={5}
+                stroke={true}
+              >
                 <Popup position={[popupPosition.lat, popupPosition.lng]}>
                   <strong>Nearest Measurment Point:</strong>
                   <br />
-                  Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude: {nearestPlace.longitude.toFixed(4)}
+                  Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
+                  {nearestPlace.longitude.toFixed(4)}
                   <br />
                   <strong>PM₂.₅:</strong> {nearestPlace.value.toFixed(2)}
                   <strong>Date: </strong>
                   {nearestPlace.date}
                 </Popup>
-              </CircleMarker>)}
-
-
+              </CircleMarker>
+            )}
           </MapContainer>
           <img
             className="grade-image"
