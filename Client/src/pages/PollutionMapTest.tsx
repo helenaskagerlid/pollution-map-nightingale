@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { IPlaces } from "../models/IPlaces";
 import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
 import { MapContainer } from "react-leaflet";
@@ -7,11 +7,10 @@ import { MapContainer } from "react-leaflet";
 import L from "leaflet";
 
 export const PollutionMapTest = () => {
+  const mapRef = useRef<L.Map | null>(null);
   const [places, setPlaces] = useState<IPlaces[]>([]);
   const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
   const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
-  const [popupPosition, setPopupPosition] = useState<L.LatLng | null>(null);
-  const [popupVisible, setPopupVisible] = useState(false);
 
   const getMarkerColor = (value: number) => {
     if (value < 5) return "#71A3FF";
@@ -64,9 +63,7 @@ export const PollutionMapTest = () => {
 
       if (nearest) {
         const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
-        setPopupPosition(nearestLatLng);
-        setPopupVisible(true);
-        map.setView(nearestLatLng, 10);
+        map.flyTo(nearestLatLng, 10);
 
         const popup = L.popup();
         if (popup) {
@@ -76,8 +73,8 @@ export const PollutionMapTest = () => {
               `
             <strong>Nearest Measurement Point:</strong><br/>
             Latitude: ${nearest.latitude.toFixed(
-              4
-            )}, Longitude: ${nearest.longitude.toFixed(4)}<br/>
+              2
+            )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
             <strong>PM₂.₅:</strong> ${nearest.value.toFixed(2)}<br/>
             <strong>Date:</strong> ${nearest.date}
           `
@@ -137,7 +134,7 @@ export const PollutionMapTest = () => {
             center={[54.526, 15.2551]}
             zoom={4}
             scrollWheelZoom={true}
-            // ref={mapRef}
+            ref={mapRef}
           >
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -166,7 +163,7 @@ export const PollutionMapTest = () => {
               </CircleMarker>
             ))}
 
-            {nearestPlace && userLocation && popupPosition && popupVisible && (
+            {nearestPlace && userLocation && (
               <CircleMarker
                 center={[nearestPlace.latitude, nearestPlace.longitude]}
                 radius={5}
@@ -175,7 +172,7 @@ export const PollutionMapTest = () => {
                 weight={5}
                 stroke={true}
               >
-                <Popup position={[popupPosition.lat, popupPosition.lng]}>
+                <Popup>
                   <strong>Nearest Measurment Point:</strong>
                   <br />
                   Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}

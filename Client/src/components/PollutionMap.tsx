@@ -4,7 +4,6 @@ import {
   Popup,
   CircleMarker,
   useMap,
-  Tooltip,
 } from "react-leaflet";
 import { germanData } from "../data/europe/germanData";
 import "leaflet/dist/leaflet.css";
@@ -26,9 +25,7 @@ const MapUpdater = ({ center }: { center: [number, number] }) => {
 };
 
 export const PollutionMap = () => {
-  const tooltipRef = useRef<L.Tooltip | null>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const [isTooltipPermanent, setIsTooltipPermanent] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<ILocations>();
   const [showSearch, setShowSearch] = useState(false);
@@ -57,17 +54,26 @@ export const PollutionMap = () => {
       setSearchValue("");
 
       if (mapRef.current) {
-        mapRef.current.setView(locationFound.center, 12);
-        setIsTooltipPermanent(mapRef.current.getZoom() > 10);
-      } else {
-        setIsTooltipPermanent(false);
+        mapRef.current.flyTo(locationFound.center, 8);
+        const popup = L.popup();
+        popup.setLatLng(locationFound.center);
+
+        const popupContent = `
+        <div>
+          <strong>${locationFound.country}</strong><br />
+          <strong>PM₂.₅:</strong> ${locationFound.data.value.toFixed(2)}<br />
+          <strong>Date:</strong> ${locationFound.data.date}
+        </div> 
+      `;
+
+        popup.setContent(popupContent);
+        popup.openOn(mapRef.current);
       }
     } else {
       console.log("Location not found");
       setSelectedLocation(undefined);
     }
   };
-  console.log("ToolTip", isTooltipPermanent);
   console.log(germanData);
 
   const getMarkerColor = (value: number) => {
@@ -76,7 +82,7 @@ export const PollutionMap = () => {
     if (value <= 15) return "#F8FF73";
     if (value <= 25) return "#FFB24D";
     if (value <= 35) return "#DE0C4A";
-    if( value <= 50) return "#8F154A";
+    if (value <= 50) return "#8F154A";
     return "#8B4D80";
   };
 
@@ -124,7 +130,7 @@ export const PollutionMap = () => {
               Search
             </button>
             <div className="filter-checkboxes">
-            <label>
+              <label>
                 <input
                   type="checkbox"
                   checked={filters.under5}
@@ -139,7 +145,10 @@ export const PollutionMap = () => {
                   type="checkbox"
                   checked={filters.between5and10}
                   onChange={() =>
-                    setFilters((prev) => ({ ...prev, between5and10: !prev.between5and10 }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      between5and10: !prev.between5and10,
+                    }))
                   }
                 />
                 <div className="color-indicator color-between-5-10"></div>
@@ -188,7 +197,10 @@ export const PollutionMap = () => {
                   type="checkbox"
                   checked={filters.between35and50}
                   onChange={() =>
-                    setFilters((prev) => ({ ...prev, between35and50: !prev.between35and50 }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      between35and50: !prev.between35and50,
+                    }))
                   }
                 />
                 <div className="color-indicator color-between-35-50"></div>
@@ -227,19 +239,6 @@ export const PollutionMap = () => {
               weight={9}
               stroke={true}
             >
-              {selectedLocation?.country === location.country &&
-                isTooltipPermanent && (
-                  <button>
-                    <Tooltip
-                      className="toolTip"
-                      ref={tooltipRef}
-                      interactive={true}
-                      permanent={true}
-                    >
-                      PM2.5: {location.data.value.toFixed(2)}
-                    </Tooltip>
-                  </button>
-                )}
               <Popup>
                 <strong>{location.country}</strong>
                 <br />
@@ -291,7 +290,7 @@ export const PollutionMap = () => {
         </p>
         <div className="image-container">
           <img
-          className="pollution-guide-img"
+            className="pollution-guide-img"
             src="../../src/assets/pollutionguide3.png"
             alt="Pollution guide"
           />
