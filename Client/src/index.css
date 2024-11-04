@@ -292,24 +292,32 @@ input {
   display: inline-block;
 }
 
-.color-under-12 {
+.color-under-5 {
+  background-color: #71A3FF;
+}
+
+.color-between-5-10 {
   background-color: #8eff44;
 }
 
-.color-between-12-25 {
+.color-between-10-15 {
   background-color: #f8ff73;
 }
 
-.color-between-25-50 {
+.color-between-15-25 {
   background-color: #ffb24d;
 }
 
-.color-between-50-150 {
+.color-between-25-35 {
   background-color: #de0c4a;
 }
 
-.color-over-150 {
-  background-color: #580822;
+.color-between-35-50 {
+  background-color: #8F154A;
+}
+
+.color-over-50 {
+  background-color: #8B4D80;
 }
 
 input[type="checkbox"] {

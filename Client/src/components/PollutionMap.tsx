@@ -33,11 +33,13 @@ export const PollutionMap = () => {
   const [selectedLocation, setSelectedLocation] = useState<ILocations>();
   const [showSearch, setShowSearch] = useState(false);
   const [filters, setFilters] = useState({
-    under12: true,
-    between12and25: true,
-    between25and50: true,
-    between50and150: true,
-    over150: true,
+    under5: true,
+    between5and10: true,
+    between10and15: true,
+    between15and25: true,
+    between25and35: true,
+    between35and50: true,
+    over50: true,
   });
 
   const handleSearch = () => {
@@ -69,11 +71,13 @@ export const PollutionMap = () => {
   console.log(germanData);
 
   const getMarkerColor = (value: number) => {
-    if (value < 12.5) return "#8EFF44";
-    if (value < 25) return "#F8FF73";
-    if (value < 50) return "#FFB24D";
-    if (value < 150) return "#DE0C4A";
-    return "#580822";
+    if (value <= 5) return "#71A3FF";
+    if (value <= 10) return "#8EFF44";
+    if (value <= 15) return "#F8FF73";
+    if (value <= 25) return "#FFB24D";
+    if (value <= 35) return "#DE0C4A";
+    if( value <= 50) return "#8F154A";
+    return "#8B4D80";
   };
 
   const filteredLocations = locations.filter((location: ILocations) => {
@@ -84,11 +88,13 @@ export const PollutionMap = () => {
     const value = location.data.value;
     const color = getMarkerColor(value);
 
-    if (filters.under12 && color === "#8EFF44") return true;
-    if (filters.between12and25 && color === "#F8FF73") return true;
-    if (filters.between25and50 && color === "#FFB24D") return true;
-    if (filters.between50and150 && color === "#DE0C4A") return true;
-    if (filters.over150 && color === "#580822") return true;
+    if (filters.under5 && color === "#71A3FF") return true;
+    if (filters.between5and10 && color === "#8EFF44") return true;
+    if (filters.between10and15 && color === "#F8FF73") return true;
+    if (filters.between15and25 && color === "#FFB24D") return true;
+    if (filters.between25and35 && color === "#DE0C4A") return true;
+    if (filters.between35and50 && color === "#8F154A") return true;
+    if (filters.over50 && color === "#8B4D80") return true;
 
     return false;
   });
@@ -118,64 +124,84 @@ export const PollutionMap = () => {
               Search
             </button>
             <div className="filter-checkboxes">
-              <label>
+            <label>
                 <input
                   type="checkbox"
-                  checked={filters.under12}
+                  checked={filters.under5}
                   onChange={() =>
-                    setFilters((prev) => ({ ...prev, under12: !prev.under12 }))
+                    setFilters((prev) => ({ ...prev, under5: !prev.under5 }))
                   }
                 />
-                <div className="color-indicator color-under-12"></div>
+                <div className="color-indicator color-under-5"></div>
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={filters.between12and25}
+                  checked={filters.between5and10}
+                  onChange={() =>
+                    setFilters((prev) => ({ ...prev, between5and10: !prev.between5and10 }))
+                  }
+                />
+                <div className="color-indicator color-between-5-10"></div>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={filters.between10and15}
                   onChange={() =>
                     setFilters((prev) => ({
                       ...prev,
-                      between12and25: !prev.between12and25,
+                      between10and15: !prev.between10and15,
                     }))
                   }
                 />
-                <div className="color-indicator color-between-12-25"></div>
+                <div className="color-indicator color-between-10-15"></div>
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={filters.between25and50}
+                  checked={filters.between15and25}
                   onChange={() =>
                     setFilters((prev) => ({
                       ...prev,
-                      between25and50: !prev.between25and50,
+                      between15and25: !prev.between15and25,
                     }))
                   }
                 />
-                <div className="color-indicator color-between-25-50"></div>
+                <div className="color-indicator color-between-15-25"></div>
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={filters.between50and150}
+                  checked={filters.between25and35}
                   onChange={() =>
                     setFilters((prev) => ({
                       ...prev,
-                      between50and150: !prev.between50and150,
+                      between25and35: !prev.between25and35,
                     }))
                   }
                 />
-                <div className="color-indicator color-between-50-150"></div>
+                <div className="color-indicator color-between-25-35"></div>
               </label>
               <label>
                 <input
                   type="checkbox"
-                  checked={filters.over150}
+                  checked={filters.between35and50}
                   onChange={() =>
-                    setFilters((prev) => ({ ...prev, over150: !prev.over150 }))
+                    setFilters((prev) => ({ ...prev, between35and50: !prev.between35and50 }))
                   }
                 />
-                <div className="color-indicator color-over-150"></div>
+                <div className="color-indicator color-between-35-50"></div>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={filters.over50}
+                  onChange={() =>
+                    setFilters((prev) => ({ ...prev, over50: !prev.over50 }))
+                  }
+                />
+                <div className="color-indicator color-over-50"></div>
               </label>
             </div>
           </div>
@@ -248,7 +274,7 @@ export const PollutionMap = () => {
 
         <img
           className="grade-image"
-          src="../../src/assets/grade.png"
+          src="../../src/assets/grade4.png"
           alt="Scale of PM2.5"
         />
         <h3>About PM₂.₅ and Heart disease</h3>
