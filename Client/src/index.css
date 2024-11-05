@@ -76,10 +76,6 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.tooltip {
-  display: none;
-}
-
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
@@ -214,6 +210,17 @@ ul {
   text-decoration: underline;
 }
 
+.about-links {
+  color: black;
+  text-decoration: underline;
+  font-weight: 400;
+}
+
+.about-links:hover {
+  color: gray;
+  text-decoration: underline;
+}
+
 .filter-container {
   display: flex;
 }
@@ -293,7 +300,7 @@ input {
 }
 
 .color-under-5 {
-  background-color: #71A3FF;
+  background-color: #71a3ff;
 }
 
 .color-between-5-10 {
@@ -313,11 +320,11 @@ input {
 }
 
 .color-between-35-50 {
-  background-color: #8F154A;
+  background-color: #8f154a;
 }
 
 .color-over-50 {
-  background-color: #8B4D80;
+  background-color: #8b4d80;
 }
 
 input[type="checkbox"] {

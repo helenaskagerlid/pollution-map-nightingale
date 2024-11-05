@@ -278,15 +278,22 @@ export const PollutionMap = () => {
         />
         <h3>About PM₂.₅ and Heart disease</h3>
         <p>
-          PM₂.₅, or fine particulate matter, is linked to heart diseases due to
-          its ability to penetrate deep into the lungs and enter the
-          bloodstream. Exposure to high levels of PM₂.₅ can cause inflammation
-          in blood vessels, leading to conditions like atherosclerosis, which
-          increases the risk of heart attacks and strokes. Studies show that
-          both short-term and long-term exposure to PM₂.₅ can increase
-          cardiovascular mortality and the likelihood of acute heart issues in
-          at-risk individuals. This correlation highlights the importance of
-          reducing air pollution to prevent heart-related health problems.
+          PM₂.₅, or fine particulate matter, poses significant health risks,
+          especially concerning cardiovascular diseases. WHO notes that PM₂.₅
+          can deeply penetrate the lungs and bloodstream, leading to
+          inflammation and potentially causing or worsening cardiovascular
+          conditions like atherosclerosis, increasing the risk of heart attacks
+          and strokes.
+          <br />
+          <br />
+          Studies show that both short-term and long-term exposure to PM₂.₅ can
+          increase cardiovascular mortality and the likelihood of acute heart
+          issues in at-risk individuals. Common symptoms of exposure to high air
+          pollution levels include coughing, difficulty breathing, and chest
+          discomfort, which can exacerbate conditions in individuals with
+          existing respiratory or cardiovascular issues.This correlation
+          highlights the importance of reducing air pollution to prevent
+          heart-related health problems and protect public health.
         </p>
         <div className="image-container">
           <img
