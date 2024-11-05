@@ -10,6 +10,7 @@ export const PollutionMapTest = () => {
   const [places, setPlaces] = useState<IPlaces[]>([]);
   const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
   const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
+  const [searchValue, setSearchValue] = useState("");
 
   // Function to determine the marker's color baed on PM2.5 value
   const getMarkerColor = (value: number) => {
@@ -54,6 +55,88 @@ export const PollutionMapTest = () => {
     fetchData();
   }, []);
 
+  // Finds the nearest measurement point within a specified city by name
+  const findNearestPointInCity = async (cityName: string): Promise<IPlaces | null> => {
+    try {
+        const geocodeResponse = await axios.get(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}`
+        );
+        
+        if (geocodeResponse.data.length === 0) {
+            alert(`Could not find coordinates for city: ${cityName}`);
+            return null;
+        }
+
+        const cityCoordinates = geocodeResponse.data[0]; // Tar första resultatet från Nominatim
+        const cityLatLng = L.latLng(parseFloat(cityCoordinates.lat), parseFloat(cityCoordinates.lon));
+
+        let nearest: IPlaces | null = null;
+        let minDistance = Infinity;
+
+        places.forEach((place) => {
+            const placeLatLng = L.latLng(place.latitude, place.longitude);
+            const distance = cityLatLng.distanceTo(placeLatLng);
+
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearest = place;
+            }
+        });
+
+        return nearest;
+    } catch (error) {
+        console.error("Error fetching city coordinates:", error);
+        return null;
+    }
+};
+
+// Searches for a city, finds the nearest measurement point, and displays it on the map with a popup
+const handleCitySearch = async () => {
+  const city = searchValue.trim();
+  if (!city) return;
+
+  const nearest = await findNearestPointInCity(city);
+  if (nearest) {
+    setNearestPoint(nearest);
+    if (mapRef.current) {
+      const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
+      
+      mapRef.current.flyTo(nearestLatLng, 10);
+
+      const popup = L.popup()
+        .setLatLng(nearestLatLng)
+        .setContent(`
+          <strong>Nearest Measurement Point:</strong><br/>
+          Latitude: ${nearest.latitude.toFixed(2)}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+          <strong>PM₂.₅:</strong> ${nearest.value.toFixed(2)}<br/>
+          <strong>Date:</strong> ${nearest.date}
+        `);
+
+      popup.openOn(mapRef.current);
+    }
+  } else {
+    alert(`No measurement points found for city: ${city}`);
+  }
+};
+
+  // Custom control button to locate the user on the map
+  const LocateControl = () => {
+    const map = useMap();
+    return (
+      <button
+        onClick={() => handleLocate(map)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1000,
+        }}
+      >
+        Find Nearest Measurement Point
+      </button>
+    );
+  };
+
   // function to locate the user and make a popup appear
   const handleLocate = (map: L.Map) => {
     map.locate({ setView: false, maxZoom: 10 });
@@ -90,7 +173,8 @@ export const PollutionMapTest = () => {
       alert("Could not access your location.");
     });
   };
-// Function that finds the nearest measurement point to the user
+
+  // Function that finds the nearest measurement point to the user
   const findNearestPoint = (userLatLng: L.LatLng): IPlaces | null => {
     let nearest: IPlaces | null = null;
     let minDistance = Infinity;
@@ -108,28 +192,37 @@ export const PollutionMapTest = () => {
   };
 
   // function to create a button for locating the user
-  const LocateControl = () => {
-    const map = useMap();
-    return (
-      <button
-        onClick={() => handleLocate(map)}
-        style={{
-          position: "absolute",
-          top: "10px",
-          right: "10px",
-          zIndex: 1000,
-        }}
-      >
-        Find Nearest Measurement Point
-      </button>
-    );
-  };
+  // const LocateControl = () => {
+  //   const map = useMap();
+  //   return (
+  //     <button
+  //       onClick={() => handleLocate(map)}
+  //       style={{
+  //         position: "absolute",
+  //         top: "10px",
+  //         right: "10px",
+  //         zIndex: 1000,
+  //       }}
+  //     >
+  //       Find Nearest Measurement Point
+  //     </button>
+  //   );
+  // };
 
   return (
     <>
       <div className="box-container"> 
         <div className="map-container">
           <h2>POLLUTION MAP</h2>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search by city"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <button onClick={handleCitySearch}>Search</button>
+          </div>
           <MapContainer
             center={[54.526, 15.2551]}
             zoom={4}

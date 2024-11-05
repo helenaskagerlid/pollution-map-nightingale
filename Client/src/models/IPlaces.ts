@@ -1,5 +1,6 @@
 export interface IPlaces {
-  country: string;
+  country?: string;
+  city: string;
   date: string;
   latitude: number;
   longitude: number;
