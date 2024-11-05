@@ -16,7 +16,7 @@ A full-stack application that displays pollution data on an interactive map. Thi
 ---
 
 ## Project Structure
-
+```
 project-root/
 ├── Client/
 │   ├── public/
@@ -48,7 +48,7 @@ project-root/
 │   ├── app.js
 │   ├── package.json
 └── README.md
-
+```
 
 ---
 
