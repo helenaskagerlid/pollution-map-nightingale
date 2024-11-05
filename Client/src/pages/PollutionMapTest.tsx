@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { IPlaces } from "../models/IPlaces";
 import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
 import { MapContainer } from "react-leaflet";
-
 import L from "leaflet";
 
 export const PollutionMapTest = () => {
@@ -12,6 +11,7 @@ export const PollutionMapTest = () => {
   const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
   const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
 
+  // Function to determine the marker's color baed on PM2.5 value
   const getMarkerColor = (value: number) => {
     if (value < 5) return "#71A3FF";
     if (value < 10) return "#8EFF44";
@@ -36,6 +36,7 @@ export const PollutionMapTest = () => {
   //   fetchData();
   // }, []);
 
+  // fetches data from server and filter the measurment points
   useEffect(() => {
     const fetchData = async (): Promise<IPlaces[]> => {
       try {
@@ -53,6 +54,7 @@ export const PollutionMapTest = () => {
     fetchData();
   }, []);
 
+  // function to locate the user and make a popup appear
   const handleLocate = (map: L.Map) => {
     map.locate({ setView: false, maxZoom: 10 });
 
@@ -88,11 +90,10 @@ export const PollutionMapTest = () => {
       alert("Could not access your location.");
     });
   };
-
+// Function that finds the nearest measurement point to the user
   const findNearestPoint = (userLatLng: L.LatLng): IPlaces | null => {
     let nearest: IPlaces | null = null;
     let minDistance = Infinity;
-    // console.log(nearestPlace)
 
     places.forEach((place) => {
       const placeLatLng = L.latLng(place.latitude, place.longitude);
@@ -106,8 +107,7 @@ export const PollutionMapTest = () => {
     return nearest;
   };
 
-  console.log("Hämtad data", places);
-
+  // function to create a button for locating the user
   const LocateControl = () => {
     const map = useMap();
     return (
@@ -127,7 +127,7 @@ export const PollutionMapTest = () => {
 
   return (
     <>
-      <div className="box-container">
+      <div className="box-container"> 
         <div className="map-container">
           <h2>POLLUTION MAP</h2>
           <MapContainer
