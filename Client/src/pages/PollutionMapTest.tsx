@@ -55,54 +55,74 @@ export const PollutionMapTest = () => {
     fetchData();
   }, []);
 
-  // Finds the nearest measurement point within a specified city by name
-  const findNearestPointInCity = async (cityName: string): Promise<IPlaces | null> => {
-    try {
-        const geocodeResponse = await axios.get(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}`
-        );
-        
-        if (geocodeResponse.data.length === 0) {
-            alert(`Could not find coordinates for city: ${cityName}`);
-            return null;
-        }
-
-        const cityCoordinates = geocodeResponse.data[0]; // Tar första resultatet från Nominatim
-        const cityLatLng = L.latLng(parseFloat(cityCoordinates.lat), parseFloat(cityCoordinates.lon));
-
-        let nearest: IPlaces | null = null;
-        let minDistance = Infinity;
-
-        places.forEach((place) => {
-            const placeLatLng = L.latLng(place.latitude, place.longitude);
-            const distance = cityLatLng.distanceTo(placeLatLng);
-
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearest = place;
-            }
-        });
-
-        return nearest;
-    } catch (error) {
-        console.error("Error fetching city coordinates:", error);
-        return null;
-    }
+  // Fetches all data points without filtering for use in searches
+const fetchAllDataForSearch = async (): Promise<IPlaces[]> => {
+  try {
+    const response = await axios.get("http://localhost:3000/nightingale2");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
 };
 
-// Searches for a city, finds the nearest measurement point, and displays it on the map with a popup
+// Updated findNearestPointInCity function
+const findNearestPointInCity = async (cityName: string, allPlaces: IPlaces[]): Promise<IPlaces | null> => {
+  try {
+    // Fetch the city coordinates from Nominatim API
+    const geocodeResponse = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}`
+    );
+
+    // Check if coordinates for the city were found
+    if (geocodeResponse.data.length === 0) {
+      alert(`Could not find coordinates for city: ${cityName}`);
+      return null;
+    }
+
+    const cityCoordinates = geocodeResponse.data[0];
+    const cityLatLng = L.latLng(parseFloat(cityCoordinates.lat), parseFloat(cityCoordinates.lon));
+
+    // Variables to track the nearest place
+    let nearest: IPlaces | null = null;
+    let minDistance = Infinity;
+
+    // Iterate over allPlaces to find the nearest measurement point to the city
+    allPlaces.forEach((place) => {
+      const placeLatLng = L.latLng(place.latitude, place.longitude);
+      const distance = cityLatLng.distanceTo(placeLatLng);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearest = place;
+      }
+    });
+
+    return nearest;
+  } catch (error) {
+    console.error("Error fetching city coordinates:", error);
+    return null;
+  }
+};
+
+
+/// Searches for a city, finds the nearest measurement point among all data points, 
+// and displays it on the map with a popup
 const handleCitySearch = async () => {
   const city = searchValue.trim();
   if (!city) return;
 
-  const nearest = await findNearestPointInCity(city);
+  // Fetch all data points for the search to ensure nearest point isn't missed
+  const allPlaces = await fetchAllDataForSearch();
+  const nearest = await findNearestPointInCity(city, allPlaces);
+
   if (nearest) {
     setNearestPoint(nearest);
     if (mapRef.current) {
       const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
-      
-      mapRef.current.flyTo(nearestLatLng, 10);
 
+      // Fly to the nearest location and display popup
+      mapRef.current.flyTo(nearestLatLng, 10);
       const popup = L.popup()
         .setLatLng(nearestLatLng)
         .setContent(`
@@ -113,6 +133,9 @@ const handleCitySearch = async () => {
         `);
 
       popup.openOn(mapRef.current);
+
+      // Optionally display this point as an additional marker on the map
+      setPlaces((prevPlaces) => [...prevPlaces, nearest]);
     }
   } else {
     alert(`No measurement points found for city: ${city}`);
