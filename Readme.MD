@@ -54,17 +54,17 @@ project-root/
 
 ## Technologies
 
-**Frontend:** React, TypeScript, React-Leaflet, Axios, CSS
-**Backend:** Express.js, MySQL
-**Database:** MySQL (with MAMP as a local server)
+- **Frontend:** React, TypeScript, React-Leaflet, Axios, CSS
+- **Backend:** Express.js, MySQL
+- **Database:** MySQL (with MAMP as a local server)
 
 ---
 
 ## Features
-**Pollution Data Visualization:** Pollution data points displayed on a map.
-**Locate Nearest Measurement Point:** Centers the map on the user's nearest pollution data point.
-**Full-Stack Integration:** Data stored in MySQL and served through an Express API.
-**Filtering and Search Options:** The user can filter and search for specific pollution levels or locations.
+- **Pollution Data Visualization:** Pollution data points displayed on a map.
+- **Locate Nearest Measurement Point:** Centers the map on the user's nearest pollution data point.
+- **Full-Stack Integration:** Data stored in MySQL and served through an Express API.
+- **Filtering and Search Options:** The user can filter and search for specific pollution levels or locations.
 
 ---
 
@@ -94,6 +94,7 @@ Open MAMP and start MySQL servers.
 **Database name:** nightingale2
 
 **Table structure:**
+```
 CREATE TABLE nightingale2 (
   country VARCHAR(128),
   date VARCHAR(128) NOT NULL,
@@ -101,9 +102,11 @@ CREATE TABLE nightingale2 (
   longitude FLOAT NOT NULL,
   value FLOAT NOT NULL
 );
+```
 
 **Configure Database Connection in Server/lib/conn.js:**
 
+```
 const mysql = require('mysql2');
 
 const connection = mysql.createConnection({
@@ -115,6 +118,7 @@ const connection = mysql.createConnection({
 });
 
 module.exports = connection;
+```
 
 ---
 
@@ -153,6 +157,7 @@ Wraps the main content and includes the Header and Outlet components for routing
 **GET /nightingale2**
 Fetches pollution data from the nightingale2 table in MySQL.
 Example Response:
+```
 [
   {
     "country": "CountryName",
@@ -163,6 +168,7 @@ Example Response:
   },
   ...
 ]
+```
 
 ---
 
