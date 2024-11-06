@@ -43,7 +43,7 @@ export const PollutionMapTest = () => {
       try {
         const response = await axios.get("http://localhost:3000/nightingale2");
         const filteredData = response.data.filter(
-          (_: IPlaces, index: number) => index % 10 === 0
+          (_: IPlaces, index: number) => index % 100 === 0
         );
         setPlaces(filteredData);
         return filteredData;
@@ -56,91 +56,98 @@ export const PollutionMapTest = () => {
   }, []);
 
   // Fetches all data points without filtering for use in searches
-const fetchAllDataForSearch = async (): Promise<IPlaces[]> => {
-  try {
-    const response = await axios.get("http://localhost:3000/nightingale2");
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-};
+  const fetchAllDataForSearch = async (): Promise<IPlaces[]> => {
+    try {
+      const response = await axios.get("http://localhost:3000/nightingale2");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
 
-// Updated findNearestPointInCity function
-const findNearestPointInCity = async (cityName: string, allPlaces: IPlaces[]): Promise<IPlaces | null> => {
-  try {
-    // Fetch the city coordinates from Nominatim API
-    const geocodeResponse = await axios.get(
-      `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityName)}`
-    );
+  // Updated findNearestPointInCity function
+  const findNearestPointInCity = async (
+    cityName: string,
+    allPlaces: IPlaces[]
+  ): Promise<IPlaces | null> => {
+    try {
+      // Fetch the city coordinates from Nominatim API
+      const geocodeResponse = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          cityName
+        )}`
+      );
 
-    // Check if coordinates for the city were found
-    if (geocodeResponse.data.length === 0) {
-      alert(`Could not find coordinates for city: ${cityName}`);
+      // Check if coordinates for the city were found
+      if (geocodeResponse.data.length === 0) {
+        alert(`Could not find coordinates for city: ${cityName}`);
+        return null;
+      }
+
+      const cityCoordinates = geocodeResponse.data[0];
+      const cityLatLng = L.latLng(
+        parseFloat(cityCoordinates.lat),
+        parseFloat(cityCoordinates.lon)
+      );
+
+      // Variables to track the nearest place
+      let nearest: IPlaces | null = null;
+      let minDistance = Infinity;
+
+      // Iterate over allPlaces to find the nearest measurement point to the city
+      allPlaces.forEach((place) => {
+        const placeLatLng = L.latLng(place.latitude, place.longitude);
+        const distance = cityLatLng.distanceTo(placeLatLng);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearest = place;
+        }
+      });
+
+      return nearest;
+    } catch (error) {
+      console.error("Error fetching city coordinates:", error);
       return null;
     }
+  };
 
-    const cityCoordinates = geocodeResponse.data[0];
-    const cityLatLng = L.latLng(parseFloat(cityCoordinates.lat), parseFloat(cityCoordinates.lon));
+  /// Searches for a city, finds the nearest measurement point among all data points,
+  // and displays it on the map with a popup
+  const handleCitySearch = async () => {
+    const city = searchValue.trim();
+    if (!city) return;
 
-    // Variables to track the nearest place
-    let nearest: IPlaces | null = null;
-    let minDistance = Infinity;
+    // Fetch all data points for the search to ensure nearest point isn't missed
+    const allPlaces = await fetchAllDataForSearch();
+    const nearest = await findNearestPointInCity(city, allPlaces);
 
-    // Iterate over allPlaces to find the nearest measurement point to the city
-    allPlaces.forEach((place) => {
-      const placeLatLng = L.latLng(place.latitude, place.longitude);
-      const distance = cityLatLng.distanceTo(placeLatLng);
+    if (nearest) {
+      setNearestPoint(nearest);
+      if (mapRef.current) {
+        const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
 
-      if (distance < minDistance) {
-        minDistance = distance;
-        nearest = place;
-      }
-    });
-
-    return nearest;
-  } catch (error) {
-    console.error("Error fetching city coordinates:", error);
-    return null;
-  }
-};
-
-
-/// Searches for a city, finds the nearest measurement point among all data points, 
-// and displays it on the map with a popup
-const handleCitySearch = async () => {
-  const city = searchValue.trim();
-  if (!city) return;
-
-  // Fetch all data points for the search to ensure nearest point isn't missed
-  const allPlaces = await fetchAllDataForSearch();
-  const nearest = await findNearestPointInCity(city, allPlaces);
-
-  if (nearest) {
-    setNearestPoint(nearest);
-    if (mapRef.current) {
-      const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
-
-      // Fly to the nearest location and display popup
-      mapRef.current.flyTo(nearestLatLng, 10);
-      const popup = L.popup()
-        .setLatLng(nearestLatLng)
-        .setContent(`
+        // Fly to the nearest location and display popup
+        mapRef.current.flyTo(nearestLatLng, 10);
+        const popup = L.popup().setLatLng(nearestLatLng).setContent(`
           <strong>Nearest Measurement Point:</strong><br/>
-          Latitude: ${nearest.latitude.toFixed(2)}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-          <strong>PM₂.₅:</strong> ${nearest.value.toFixed(2)}<br/>
+          Latitude: ${nearest.latitude.toFixed(
+            2
+          )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+          <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
           <strong>Date:</strong> ${nearest.date}
         `);
 
-      popup.openOn(mapRef.current);
+        popup.openOn(mapRef.current);
 
-      // Optionally display this point as an additional marker on the map
-      setPlaces((prevPlaces) => [...prevPlaces, nearest]);
+        // Optionally display this point as an additional marker on the map
+        setPlaces((prevPlaces) => [...prevPlaces, nearest]);
+      }
+    } else {
+      alert(`No measurement points found for city: ${city}`);
     }
-  } else {
-    alert(`No measurement points found for city: ${city}`);
-  }
-};
+  };
 
   // Custom control button to locate the user on the map
   const LocateControl = () => {
@@ -183,7 +190,7 @@ const handleCitySearch = async () => {
             Latitude: ${nearest.latitude.toFixed(
               2
             )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-            <strong>PM₂.₅:</strong> ${nearest.value.toFixed(2)}<br/>
+            <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
             <strong>Date:</strong> ${nearest.date}
           `
             )
@@ -234,7 +241,7 @@ const handleCitySearch = async () => {
 
   return (
     <>
-      <div className="box-container"> 
+      <div className="box-container">
         <div className="map-container">
           <h2>POLLUTION MAP</h2>
           <div className="search-container">
@@ -272,7 +279,11 @@ const handleCitySearch = async () => {
                 <Popup>
                   <strong>{place.country}</strong>
                   <br />
-                  <strong>PM₂.₅:</strong> {place.value.toFixed(2)}{" "}
+                  <p>
+                    <strong>Latitude:</strong> {place.latitude}{" "}
+                    <strong>Longitude:</strong> {place.longitude}
+                  </p>
+                  <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
                   <strong>Date: </strong>
                   {place.date}
                 </Popup>
@@ -294,7 +305,7 @@ const handleCitySearch = async () => {
                   Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
                   {nearestPlace.longitude.toFixed(4)}
                   <br />
-                  <strong>PM₂.₅:</strong> {nearestPlace.value.toFixed(2)}
+                  <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
                   <strong>Date: </strong>
                   {nearestPlace.date}
                 </Popup>
