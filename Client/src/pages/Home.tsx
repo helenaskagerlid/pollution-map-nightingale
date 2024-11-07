@@ -1,10 +1,10 @@
-import { PollutionMap } from "../components/PollutionMap";
+import { PollutionMapTest } from "../components/PollutionMapTest";
 
 export const Home = () => {
   return (
     <>
       <div className="box-container">
-        <PollutionMap />
+        <PollutionMapTest />
       </div>
     </>
   );

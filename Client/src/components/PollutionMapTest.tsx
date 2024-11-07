@@ -4,6 +4,7 @@ import { IPlaces } from "../models/IPlaces";
 import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
 import { MapContainer } from "react-leaflet";
 import L from "leaflet";
+import { Loader } from "./Loader";
 
 export const PollutionMapTest = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -11,6 +12,7 @@ export const PollutionMapTest = () => {
   const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
   const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
   const [searchValue, setSearchValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Function to determine the marker's color baed on PM2.5 value
   const getMarkerColor = (value: number) => {
@@ -23,33 +25,22 @@ export const PollutionMapTest = () => {
     return "#8B4DB0";
   };
 
-  // useEffect(() => {
-  //   const fetchData = async (): Promise<IPlaces[]> => {
-  //     try {
-  //       const response = await axios.get("http://localhost:3000/nightingale2");
-  //       setPlaces(response.data);
-  //       return response.data;
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //       return [];
-  //     }
-  //   };
-  //   fetchData();
-  // }, []);
-
   // fetches data from server and filter the measurment points
   useEffect(() => {
     const fetchData = async (): Promise<IPlaces[]> => {
+      setLoading(true);
       try {
         const response = await axios.get("http://localhost:3000/nightingale2");
         const filteredData = response.data.filter(
-          (_: IPlaces, index: number) => index % 100 === 0
+          (_: IPlaces, index: number) => index % 400 === 0
         );
         setPlaces(filteredData);
         return filteredData;
       } catch (error) {
         console.error("Error fetching data:", error);
         return [];
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -116,8 +107,12 @@ export const PollutionMapTest = () => {
   /// Searches for a city, finds the nearest measurement point among all data points,
   // and displays it on the map with a popup
   const handleCitySearch = async () => {
+    setLoading(true);
     const city = searchValue.trim();
-    if (!city) return;
+    if (!city) {
+      setLoading(false);
+      return;
+    } 
 
     // Fetch all data points for the search to ensure nearest point isn't missed
     const allPlaces = await fetchAllDataForSearch();
@@ -147,6 +142,7 @@ export const PollutionMapTest = () => {
     } else {
       alert(`No measurement points found for city: ${city}`);
     }
+    setLoading(false);
   };
 
   // Custom control button to locate the user on the map
@@ -169,6 +165,7 @@ export const PollutionMapTest = () => {
 
   // function to locate the user and make a popup appear
   const handleLocate = (map: L.Map) => {
+    setLoading(true);
     map.locate({ setView: false, maxZoom: 10 });
 
     map.on("locationfound", (e: L.LocationEvent) => {
@@ -196,11 +193,13 @@ export const PollutionMapTest = () => {
             )
             .openOn(map);
         }
+        setLoading(false);
       }
     });
 
     map.on("locationerror", () => {
       alert("Could not access your location.");
+      setLoading(false);
     });
   };
 
@@ -221,104 +220,122 @@ export const PollutionMapTest = () => {
     return nearest;
   };
 
-  // function to create a button for locating the user
-  // const LocateControl = () => {
-  //   const map = useMap();
-  //   return (
-  //     <button
-  //       onClick={() => handleLocate(map)}
-  //       style={{
-  //         position: "absolute",
-  //         top: "10px",
-  //         right: "10px",
-  //         zIndex: 1000,
-  //       }}
-  //     >
-  //       Find Nearest Measurement Point
-  //     </button>
-  //   );
-  // };
 
   return (
     <>
       <div className="box-container">
-        <div className="map-container">
-          <h2>POLLUTION MAP</h2>
-          <div className="search-container">
-            <input
-              type="text"
-              placeholder="Search by city"
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-            <button onClick={handleCitySearch}>Search</button>
+      {loading && (
+          <div className="loader-overlay">
+            <Loader />
           </div>
-          <MapContainer
-            center={[54.526, 15.2551]}
-            zoom={4}
-            scrollWheelZoom={true}
-            ref={mapRef}
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        )}
+          <div className="map-container">
+            <h2>POLLUTION MAP</h2>
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search by city"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+              <button className="search-button" onClick={handleCitySearch}>Search</button>
+            </div>
+  
+            <MapContainer
+              center={[33, 10]}
+              zoom={1}
+              scrollWheelZoom={true}
+              ref={mapRef}
+            >
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+  
+              <LocateControl />
+  
+              {places.map((place, index) => (
+                <CircleMarker
+                  key={index}
+                  center={[place.latitude, place.longitude]}
+                  radius={1}
+                  fillColor="transparent"
+                  color={getMarkerColor(place.value)}
+                  weight={5}
+                  stroke={true}
+                >
+                  <Popup>
+                    <strong>{place.country}</strong>
+                    <br />
+                    <p>
+                      <strong>Latitude:</strong> {place.latitude}{" "}
+                      <strong>Longitude:</strong> {place.longitude}
+                    </p>
+                    <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
+                    <strong>Date: </strong>
+                    {place.date}
+                  </Popup>
+                </CircleMarker>
+              ))}
+  
+              {nearestPlace && userLocation && (
+                <CircleMarker
+                  center={[nearestPlace.latitude, nearestPlace.longitude]}
+                  radius={5}
+                  fillColor="transparent"
+                  color="#FF0000"
+                  weight={5}
+                  stroke={true}
+                >
+                  <Popup>
+                    <strong>Nearest Measurement Point:</strong>
+                    <br />
+                    Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
+                    {nearestPlace.longitude.toFixed(4)}
+                    <br />
+                    <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
+                    <br />
+                    <strong>Date:</strong> {nearestPlace.date}
+                  </Popup>
+                </CircleMarker>
+              )}
+            </MapContainer>
+  
+            <img
+              className="grade-image"
+              src="../../src/assets/grade4.png"
+              alt="Scale of PM2.5"
             />
-
-            <LocateControl />
-
-            {places.map((place, index) => (
-              <CircleMarker
-                key={index}
-                center={[place.latitude, place.longitude]}
-                radius={1}
-                fillColor="transparent"
-                color={getMarkerColor(place.value)}
-                weight={5}
-                stroke={true}
-              >
-                <Popup>
-                  <strong>{place.country}</strong>
-                  <br />
-                  <p>
-                    <strong>Latitude:</strong> {place.latitude}{" "}
-                    <strong>Longitude:</strong> {place.longitude}
-                  </p>
-                  <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
-                  <strong>Date: </strong>
-                  {place.date}
-                </Popup>
-              </CircleMarker>
-            ))}
-
-            {nearestPlace && userLocation && (
-              <CircleMarker
-                center={[nearestPlace.latitude, nearestPlace.longitude]}
-                radius={5}
-                fillColor="transparent"
-                color="#FF0000"
-                weight={5}
-                stroke={true}
-              >
-                <Popup>
-                  <strong>Nearest Measurment Point:</strong>
-                  <br />
-                  Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
-                  {nearestPlace.longitude.toFixed(4)}
-                  <br />
-                  <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
-                  <strong>Date: </strong>
-                  {nearestPlace.date}
-                </Popup>
-              </CircleMarker>
-            )}
-          </MapContainer>
-          <img
-            className="grade-image"
-            src="../../src/assets/grade4.png"
-            alt="Scale of PM2.5"
-          />
-        </div>
+  
+            <h3>About PM₂.₅ and Heart disease</h3>
+            <p>
+              PM₂.₅, or fine particulate matter, poses significant health risks,
+              especially concerning cardiovascular diseases. WHO notes that PM₂.₅
+              can deeply penetrate the lungs and bloodstream, leading to
+              inflammation and potentially causing or worsening cardiovascular
+              conditions like atherosclerosis, increasing the risk of heart
+              attacks and strokes.
+              <br />
+              <br />
+              Studies show that both short-term and long-term exposure to PM₂.₅
+              can increase cardiovascular mortality and the likelihood of acute
+              heart issues in at-risk individuals. Common symptoms of exposure to
+              high air pollution levels include coughing, difficulty breathing,
+              and chest discomfort, which can exacerbate conditions in individuals
+              with existing respiratory or cardiovascular issues. This correlation
+              highlights the importance of reducing air pollution to prevent
+              heart-related health problems and protect public health.
+            </p>
+  
+            <div className="image-container">
+              <img
+                className="pollution-guide-img"
+                src="../../src/assets/pollutionguide3.png"
+                alt="Pollution guide"
+              />
+            </div>
+          </div>
       </div>
     </>
   );
-};
+}

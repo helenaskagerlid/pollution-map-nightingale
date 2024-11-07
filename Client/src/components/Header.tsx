@@ -1,14 +1,18 @@
-import { NavLink } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 export const Header = () => {
   return (
     <>
       <header>
-        <img
-          className="header-logo"
-          src="../../public/nightingalelogo.svg"
-          alt="nightingale logo"
-        />
+        <Link to="/">
+          {" "}
+          <img
+            className="header-logo"
+            src="../../public/nightingalelogo.svg"
+            alt="nightingale logo"
+          />
+        </Link>
+
         <nav>
           <ul>
             <li>
@@ -20,12 +24,12 @@ export const Header = () => {
             <li>
               <NavLink to="/chart">Chart</NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/pollutionMapTest">Pollution Map TEST</NavLink>
             </li>
             <li>
               <NavLink to="/pollutionTEST">POLLUTION TEST</NavLink>
-            </li>
+            </li> */}
           </ul>
         </nav>
         <button>
