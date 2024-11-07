@@ -167,7 +167,8 @@ ul {
 }
 
 .pollution-guide-img {
-  width: 400px;
+  width: 100%;
+  max-width: auto;
   border: 2px solid rgb(76, 73, 73);
 }
 
@@ -258,7 +259,8 @@ ul {
 
 input {
   background-color: #e0e0e0;
-  width: 275px;
+  width: 100%;
+  max-width: auto;
   height: 35px;
   border: none;
   font-weight: 400;
