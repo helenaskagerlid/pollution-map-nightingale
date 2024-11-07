@@ -112,7 +112,7 @@ export const PollutionMapTest = () => {
     if (!city) {
       setLoading(false);
       return;
-    } 
+    }
 
     // Fetch all data points for the search to ensure nearest point isn't missed
     const allPlaces = await fetchAllDataForSearch();
@@ -220,27 +220,28 @@ export const PollutionMapTest = () => {
     return nearest;
   };
 
-
   return (
     <>
       <div className="box-container">
-      {loading && (
-          <div className="loader-overlay">
-            <Loader />
+        <div className="map-container">
+          <h2>POLLUTION MAP</h2>
+          <div className="search-container">
+            <input
+              type="text"
+              placeholder="Search by city"
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <button className="search-button" onClick={handleCitySearch}>
+              Search
+            </button>
           </div>
-        )}
-          <div className="map-container">
-            <h2>POLLUTION MAP</h2>
-            <div className="search-container">
-              <input
-                type="text"
-                placeholder="Search by city"
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-              />
-              <button className="search-button" onClick={handleCitySearch}>Search</button>
-            </div>
-  
+          <div className="map-wrapper">
+            {loading && (
+              <div className="loader-overlay">
+                <Loader />
+              </div>
+            )}
             <MapContainer
               center={[33, 10]}
               zoom={1}
@@ -251,9 +252,9 @@ export const PollutionMapTest = () => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-  
+
               <LocateControl />
-  
+
               {places.map((place, index) => (
                 <CircleMarker
                   key={index}
@@ -277,7 +278,7 @@ export const PollutionMapTest = () => {
                   </Popup>
                 </CircleMarker>
               ))}
-  
+
               {nearestPlace && userLocation && (
                 <CircleMarker
                   center={[nearestPlace.latitude, nearestPlace.longitude]}
@@ -300,42 +301,43 @@ export const PollutionMapTest = () => {
                 </CircleMarker>
               )}
             </MapContainer>
-  
-            <img
-              className="grade-image"
-              src="../../src/assets/grade4.png"
-              alt="Scale of PM2.5"
-            />
-  
-            <h3>About PM₂.₅ and Heart disease</h3>
-            <p>
-              PM₂.₅, or fine particulate matter, poses significant health risks,
-              especially concerning cardiovascular diseases. WHO notes that PM₂.₅
-              can deeply penetrate the lungs and bloodstream, leading to
-              inflammation and potentially causing or worsening cardiovascular
-              conditions like atherosclerosis, increasing the risk of heart
-              attacks and strokes.
-              <br />
-              <br />
-              Studies show that both short-term and long-term exposure to PM₂.₅
-              can increase cardiovascular mortality and the likelihood of acute
-              heart issues in at-risk individuals. Common symptoms of exposure to
-              high air pollution levels include coughing, difficulty breathing,
-              and chest discomfort, which can exacerbate conditions in individuals
-              with existing respiratory or cardiovascular issues. This correlation
-              highlights the importance of reducing air pollution to prevent
-              heart-related health problems and protect public health.
-            </p>
-  
-            <div className="image-container">
-              <img
-                className="pollution-guide-img"
-                src="../../src/assets/pollutionguide3.png"
-                alt="Pollution guide"
-              />
-            </div>
           </div>
+
+          <img
+            className="grade-image"
+            src="../../src/assets/grade4.png"
+            alt="Scale of PM2.5"
+          />
+
+          <h3>About PM₂.₅ and Heart disease</h3>
+          <p>
+            PM₂.₅, or fine particulate matter, poses significant health risks,
+            especially concerning cardiovascular diseases. WHO notes that PM₂.₅
+            can deeply penetrate the lungs and bloodstream, leading to
+            inflammation and potentially causing or worsening cardiovascular
+            conditions like atherosclerosis, increasing the risk of heart
+            attacks and strokes.
+            <br />
+            <br />
+            Studies show that both short-term and long-term exposure to PM₂.₅
+            can increase cardiovascular mortality and the likelihood of acute
+            heart issues in at-risk individuals. Common symptoms of exposure to
+            high air pollution levels include coughing, difficulty breathing,
+            and chest discomfort, which can exacerbate conditions in individuals
+            with existing respiratory or cardiovascular issues. This correlation
+            highlights the importance of reducing air pollution to prevent
+            heart-related health problems and protect public health.
+          </p>
+
+          <div className="image-container">
+            <img
+              className="pollution-guide-img"
+              src="../../src/assets/pollutionguide3.png"
+              alt="Pollution guide"
+            />
+          </div>
+        </div>
       </div>
     </>
   );
-}
+};
