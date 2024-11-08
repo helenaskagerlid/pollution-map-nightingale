@@ -2,7 +2,7 @@ export const About = () => {
   return (
     <>
       <div className="box-container">
-        <section>
+        <section className="about-container">
           <h2>About the project</h2>
           <p>
             Heart disease is sadly the world’s biggest killer and prevalence is

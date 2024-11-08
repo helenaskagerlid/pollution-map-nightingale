@@ -63,7 +63,7 @@ const LineChart: React.FC = () => {
   return (
     <>
       <div className="box-container">
-        <section>
+        <section className="chart-container">
           <div className="line-chart">
             <h2>Chart</h2>
             <Line data={data} options={options} />

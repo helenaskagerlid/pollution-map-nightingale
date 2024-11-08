@@ -132,10 +132,12 @@ h3 {
 
 p {
   font-family: "Inria Sans";
-  margin: 0 auto;
-  width: calc(100vw - 230px);
+  width: calc(100vw - 100px);
   margin-bottom: 30px;
-  grid-column: 1 / span 5
+  grid-column: span 5;
+  margin: 0 auto;
+  padding: 0 20px;
+  margin: 10px 0;
 }
 
 .address-content-container {
@@ -144,7 +146,14 @@ p {
   display: inline-block;
 }
 
+.chart-container {
+  grid-column: span 5;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: grid;
+}
+
 .line-chart {
+  grid-column: span 5;
   width: calc(100vw - 170px);
   height: calc(100vw - 170px);
   margin: 0 auto;
@@ -176,6 +185,7 @@ ul {
   width: 100%;
   max-width: auto;
   border: 2px solid rgb(76, 73, 73);
+  max-width: 500px;
 }
 
 .leaflet-container {
@@ -202,13 +212,21 @@ ul {
   padding-bottom: 40px;
 }
 
+.about-container {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0 auto;
+  /* width: calc(100vw - 100px); */
+  padding-bottom: 40px;
+  grid-column: span 5;
+  text-align: center;
+}
+
 .map-container {
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  /* display: flex;
-  flex-direction: column; */
   display: grid;
-  /* align-items: center; */
   grid-column: span 5;
+  text-align: center;
 }
 
 .map-wrapper {
@@ -365,6 +383,10 @@ input {
 }
 
 @media (min-width: 768px) {
+  .box-container {
+    width: calc(100vw - 100px);
+  }
+
   .search-container {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
@@ -382,6 +404,14 @@ input {
     margin-left: 30px;
     margin-right: 50px;
     margin-top: 10px;
+  }
+
+  p {
+    margin: 0 20px 0 20px;
+  }
+
+  .pollution-guide-img {
+    margin: 0 20px 0 20px;
   }
 }
 
@@ -411,6 +441,9 @@ input {
 
 .contact-container {
   text-align: left;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: grid;
+  grid-column: span 5;
 }
 
 .linkedin-a {
