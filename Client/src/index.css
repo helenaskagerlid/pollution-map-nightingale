@@ -209,10 +209,10 @@ ul {
   display: grid;
   /* align-items: center; */
   grid-column: span 5;
-  grid-template-rows: auto;
 }
 
 .map-wrapper {
+  position: relative;
   grid-column: span 5;
   margin: 0 auto;
   display: grid;
@@ -227,12 +227,12 @@ ul {
 .search-container {
   display: grid;
   grid-column: span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 
 input {
-  grid-column: span 5;
+  grid-column: span 4;
   background-color: #e0e0e0;
   margin: 10px;
   height: 35px;
@@ -246,20 +246,15 @@ input {
 }
 
 .search-button {
-  grid-column: 2 /span 3;
-  margin-left: 30px;
-  margin-right: 30px;
+  grid-column: 2 / span 2;
   border-radius: 20px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
   background-image: linear-gradient(#871919, #b52828);
   color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
-  max-width: 100%;
   margin-bottom: 10px;
   text-transform: uppercase;
   cursor: pointer;
@@ -271,17 +266,18 @@ input {
 }
 
 .loader-overlay {
-  grid-column: 2 / span 3;
-  grid-row: 4 / 5;
-  /* position: absolute;
-  top: 45%;
-  left: 34%;
+  /* grid-column: 2 / span 3;
+  grid-row: 4 / 5; */
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   background: transparent;
   display: flex;
+  justify-content: center;
   align-items: center;
-  z-index: 2000; */
+  z-index: 1000;
 }
 
 #loader {
@@ -368,24 +364,45 @@ input {
   }
 }
 
-/* @media (min-width: 400px) {
+@media (min-width: 768px) {
   .search-container {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
   }
 
-  .input {
-    grid-column: 1 / span 5;
+  input {
+    grid-column: 1 / span 4;
+    margin-left: 35px;
+    margin-right: 55px;
   }
 
   .search-button {
-    grid-column: 2 / span 3;
+    grid-column: 5 / span 2;
     margin-left: 30px;
-    margin-right: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .search-container {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
   }
 
+  input {
+    grid-column: 3 / span 5;
+  }
 
-} */
+  .search-button {
+    grid-column: 8 / span 2;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
+}
 
 
 
