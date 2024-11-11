@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,7 +24,7 @@ ChartJS.register(
 const labels = germanData.map((data) => data.date);
 const dataValue = germanData.map((data) => data.value);
 
-const LineChart: React.FC = () => {
+const LineChart = () => {
   const data = {
     labels: labels,
     datasets: [

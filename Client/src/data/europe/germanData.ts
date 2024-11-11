@@ -1,4 +1,4 @@
-import { IChartData } from "../../models/IChartData";
+import { IChartData } from "../../models/IChart";
 
 export const germanData: IChartData[] = [
   {
