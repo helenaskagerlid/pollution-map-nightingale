@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { IPlaces } from "../models/IPlaces";
+import { ILocations } from "../models/ILocations";
 import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
 import { MapContainer } from "react-leaflet";
 import L from "leaflet";
@@ -10,9 +10,9 @@ import axios from "axios";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
-  const [places, setPlaces] = useState<IPlaces[]>([]);
+  const [places, setPlaces] = useState<ILocations[]>([]);
   const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
-  const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
+  const [nearestPlace, setNearestPoint] = useState<ILocations | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -129,8 +129,8 @@ export const PollutionMap = () => {
   // Updated findNearestPointInCity function
   const findNearestPointInCity = async (
     cityName: string,
-    allPlaces: IPlaces[]
-  ): Promise<IPlaces | null> => {
+    allPlaces: ILocations[]
+  ): Promise<ILocations | null> => {
     try {
       // Fetch the city coordinates from Nominatim API
       const geocodeResponse = await axios.get(
@@ -152,7 +152,7 @@ export const PollutionMap = () => {
       );
 
       // Variables to track the nearest place
-      let nearest: IPlaces | null = null;
+      let nearest: ILocations | null = null;
       let minDistance = Infinity;
 
       // Iterate over allPlaces to find the nearest measurement point to the city
@@ -174,8 +174,8 @@ export const PollutionMap = () => {
   };
 
   // Function that finds the nearest measurement point to the user
-  const findNearestPoint = (userLatLng: L.LatLng): IPlaces | null => {
-    let nearest: IPlaces | null = null;
+  const findNearestPoint = (userLatLng: L.LatLng): ILocations | null => {
+    let nearest: ILocations | null = null;
     let minDistance = Infinity;
 
     places.forEach((place) => {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { IPlaces } from "../models/IPlaces";
+import { IPlaces } from "../models/ILocations";
 
 // fetches data from server and filter the measurment points
 export const fetchData = async (): Promise<IPlaces[]> => {

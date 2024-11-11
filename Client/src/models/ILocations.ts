@@ -1,6 +1,8 @@
 export interface ILocations {
-  country: string;
-  // center: LatLngTuple;
-  center: [number, number];
-  data: { value: number; date: string };
+  country?: string;
+  city: string;
+  date: string;
+  latitude: number;
+  longitude: number;
+  value: number;
 }

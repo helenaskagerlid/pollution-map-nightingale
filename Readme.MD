@@ -25,17 +25,34 @@ project-root/
 │   │   ├── assets/
 │   │   │   ├── backgroundImg.png
 │   │   │   ├── grade4.png
-│   │   │   ├── pollutionguide3.png
+│   │   │   ├── pollutionguide3.png 
 │   │   ├── components/
+|   |   |   ├── icons/ 
+|   |   |   |   ├── AddressIcon.tsx
+|   |   |   |   ├── LinkedInIcon.tsx
+|   |   |   |   ├── MailIcon.tsx
 │   │   │   ├── Header.tsx
+│   │   │   ├── Loader.tsx
+│   │   │   ├── LocateControl.tsx
+│   │   │   ├── PollutionMap.tsx
+│   │   │   ├── findNearestPoint.ts
 │   │   ├── pages/
 │   │   │   ├── Layout.tsx
-│   │   │   ├── PollutionMapTest.tsx
+│   │   │   ├── About.tsx
+│   │   │   ├── Contact.tsx
+│   │   │   ├── NotFound.tsx
+│   │   │   ├── PollutionChart.tsx
+│   │   │   ├── Home.tsx
+│   │   ├── helpers/
+│   │   │   ├── getMarkerColor.ts
 │   │   ├── models/
-│   │   │   ├── IPlaces.ts
+│   │   │   ├── ILocations.ts
+│   │   ├── service/
+│   │   │   ├── fetchData.ts
 │   │   ├── App.tsx
 │   │   ├── main.tsx
 │   │   ├── router.tsx
+│   │   ├── index.css
 │   ├── index.html
 │   ├── package.json
 
@@ -71,7 +88,7 @@ project-root/
 ## Installation
 ##### Clone the Repository:
 
-- git clone <repo_url>
+- git clone <https://github.com/helenaskagerlid/pollution-map-nightingale>
 
 ##### Install Dependencies for Client:
 

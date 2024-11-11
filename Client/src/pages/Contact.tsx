@@ -1,6 +1,6 @@
-import { AddressIcon } from "../components/AddressIcon";
-import { LinkedInIcon } from "../components/LinkedInIcon";
-import { MailIcon } from "../components/MailIcon";
+import { AddressIcon } from "../components/icons/AddressIcon";
+import { LinkedInIcon } from "../components/icons/LinkedInIcon";
+import { MailIcon } from "../components/icons/MailIcon";
 
 export const Contact = () => {
   return (
