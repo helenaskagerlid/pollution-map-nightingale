@@ -1,10 +1,12 @@
-import axios from "axios";
 import { useState, useEffect, useRef } from "react";
 import { IPlaces } from "../models/IPlaces";
 import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
 import { MapContainer } from "react-leaflet";
 import L from "leaflet";
 import { Loader } from "./Loader";
+import { getMarkerColor } from "../helpers/getMarkerColor";
+import { fetchAllDataForSearch, fetchData } from "../service/fetchData";
+import axios from "axios";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -14,95 +16,16 @@ export const PollutionMap = () => {
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Function to determine the marker's color baed on PM2.5 value
-  const getMarkerColor = (value: number) => {
-    if (value < 5) return "#71A3FF";
-    if (value < 10) return "#8EFF44";
-    if (value < 15) return "#F8FF73";
-    if (value < 25) return "#FFB24D";
-    if (value < 35) return "#DE0C4A";
-    if (value < 50) return "#8F154A";
-    return "#8B4DB0";
-  };
-
   // fetches data from server and filter the measurment points
   useEffect(() => {
-    const fetchData = async (): Promise<IPlaces[]> => {
+    const loadPlaces = async () => {
       setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:3000/nightingale2");
-        const filteredData = response.data.filter(
-          (_: IPlaces, index: number) => index % 400 === 0
-        );
-        setPlaces(filteredData);
-        return filteredData;
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        return [];
-      } finally {
-        setLoading(false);
-      }
+      const filteredData = await fetchData();
+      setPlaces(filteredData);
+      setLoading(false);
     };
-    fetchData();
+    loadPlaces();
   }, []);
-
-  // Fetches all data points without filtering for use in searches
-  const fetchAllDataForSearch = async (): Promise<IPlaces[]> => {
-    try {
-      const response = await axios.get("http://localhost:3000/nightingale2");
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
-    }
-  };
-
-  // Updated findNearestPointInCity function
-  const findNearestPointInCity = async (
-    cityName: string,
-    allPlaces: IPlaces[]
-  ): Promise<IPlaces | null> => {
-    try {
-      // Fetch the city coordinates from Nominatim API
-      const geocodeResponse = await axios.get(
-        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-          cityName
-        )}`
-      );
-
-      // Check if coordinates for the city were found
-      if (geocodeResponse.data.length === 0) {
-        alert(`Could not find coordinates for city: ${cityName}`);
-        return null;
-      }
-
-      const cityCoordinates = geocodeResponse.data[0];
-      const cityLatLng = L.latLng(
-        parseFloat(cityCoordinates.lat),
-        parseFloat(cityCoordinates.lon)
-      );
-
-      // Variables to track the nearest place
-      let nearest: IPlaces | null = null;
-      let minDistance = Infinity;
-
-      // Iterate over allPlaces to find the nearest measurement point to the city
-      allPlaces.forEach((place) => {
-        const placeLatLng = L.latLng(place.latitude, place.longitude);
-        const distance = cityLatLng.distanceTo(placeLatLng);
-
-        if (distance < minDistance) {
-          minDistance = distance;
-          nearest = place;
-        }
-      });
-
-      return nearest;
-    } catch (error) {
-      console.error("Error fetching city coordinates:", error);
-      return null;
-    }
-  };
 
   /// Searches for a city, finds the nearest measurement point among all data points,
   // and displays it on the map with a popup
@@ -183,13 +106,13 @@ export const PollutionMap = () => {
           popup
             .setContent(
               `
-            <strong>Nearest Measurement Point:</strong><br/>
-            Latitude: ${nearest.latitude.toFixed(
-              2
-            )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-            <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
-            <strong>Date:</strong> ${nearest.date}
-          `
+              <strong>Nearest Measurement Point:</strong><br/>
+              Latitude: ${nearest.latitude.toFixed(
+                2
+              )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+              <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
+              <strong>Date:</strong> ${nearest.date}
+            `
             )
             .openOn(map);
         }
@@ -201,6 +124,53 @@ export const PollutionMap = () => {
       alert("Could not access your location.");
       setLoading(false);
     });
+  };
+
+  // Updated findNearestPointInCity function
+  const findNearestPointInCity = async (
+    cityName: string,
+    allPlaces: IPlaces[]
+  ): Promise<IPlaces | null> => {
+    try {
+      // Fetch the city coordinates from Nominatim API
+      const geocodeResponse = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          cityName
+        )}`
+      );
+
+      // Check if coordinates for the city were found
+      if (geocodeResponse.data.length === 0) {
+        alert(`Could not find coordinates for city: ${cityName}`);
+        return null;
+      }
+
+      const cityCoordinates = geocodeResponse.data[0];
+      const cityLatLng = L.latLng(
+        parseFloat(cityCoordinates.lat),
+        parseFloat(cityCoordinates.lon)
+      );
+
+      // Variables to track the nearest place
+      let nearest: IPlaces | null = null;
+      let minDistance = Infinity;
+
+      // Iterate over allPlaces to find the nearest measurement point to the city
+      allPlaces.forEach((place) => {
+        const placeLatLng = L.latLng(place.latitude, place.longitude);
+        const distance = cityLatLng.distanceTo(placeLatLng);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearest = place;
+        }
+      });
+
+      return nearest;
+    } catch (error) {
+      console.error("Error fetching city coordinates:", error);
+      return null;
+    }
   };
 
   // Function that finds the nearest measurement point to the user

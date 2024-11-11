@@ -227,6 +227,8 @@ ul {
   display: grid;
   grid-column: span 5;
   text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 .map-wrapper {
@@ -237,8 +239,9 @@ ul {
   grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
-.leaflet-container{
+.leaflet-container {
   margin: 0;
+  padding: 0;
   grid-column: span 5;
 }
 
@@ -247,7 +250,6 @@ ul {
   grid-column: span 5;
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }
-
 
 input {
   grid-column: span 4;
