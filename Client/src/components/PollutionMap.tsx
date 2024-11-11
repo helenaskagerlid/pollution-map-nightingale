@@ -1,306 +1,341 @@
-import {
-  MapContainer,
-  TileLayer,
-  Popup,
-  CircleMarker,
-  useMap,
-} from "react-leaflet";
-import { germanData } from "../data/europe/germanData";
-import "leaflet/dist/leaflet.css";
-import "@geoapify/leaflet-address-search-plugin/dist/L.Control.GeoapifyAddressSearch.min.css";
-import { locations } from "../data/locations";
-import "@geoapify/leaflet-address-search-plugin";
-import { useEffect, useRef, useState } from "react";
-import { ILocations } from "../models/ILocations";
+import axios from "axios";
+import { useState, useEffect, useRef } from "react";
+import { IPlaces } from "../models/IPlaces";
+import { CircleMarker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer } from "react-leaflet";
 import L from "leaflet";
-// import axios from "axios";
-// import { IPlaces } from "../models/IPlaces";
-
-const MapUpdater = ({ center }: { center: [number, number] }) => {
-  const map = useMap();
-  useEffect(() => {
-    map.setView(center, 6, { animate: true });
-  }, [center, map]);
-  return null;
-};
+import { Loader } from "./Loader";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
+  const [places, setPlaces] = useState<IPlaces[]>([]);
+  const [userLocation, setUserLocation] = useState<L.LatLng | null>(null);
+  const [nearestPlace, setNearestPoint] = useState<IPlaces | null>(null);
   const [searchValue, setSearchValue] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState<ILocations>();
-  const [showSearch, setShowSearch] = useState(false);
-  const [filters, setFilters] = useState({
-    under5: true,
-    between5and10: true,
-    between10and15: true,
-    between15and25: true,
-    between25and35: true,
-    between35and50: true,
-    over50: true,
-  });
+  const [loading, setLoading] = useState(false);
 
-  const handleSearch = () => {
-    if (!searchValue.trim()) {
-      console.log("Enter a valid term");
+  // Function to determine the marker's color baed on PM2.5 value
+  const getMarkerColor = (value: number) => {
+    if (value < 5) return "#71A3FF";
+    if (value < 10) return "#8EFF44";
+    if (value < 15) return "#F8FF73";
+    if (value < 25) return "#FFB24D";
+    if (value < 35) return "#DE0C4A";
+    if (value < 50) return "#8F154A";
+    return "#8B4DB0";
+  };
+
+  // fetches data from server and filter the measurment points
+  useEffect(() => {
+    const fetchData = async (): Promise<IPlaces[]> => {
+      setLoading(true);
+      try {
+        const response = await axios.get("http://localhost:3000/nightingale2");
+        const filteredData = response.data.filter(
+          (_: IPlaces, index: number) => index % 400 === 0
+        );
+        setPlaces(filteredData);
+        return filteredData;
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        return [];
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Fetches all data points without filtering for use in searches
+  const fetchAllDataForSearch = async (): Promise<IPlaces[]> => {
+    try {
+      const response = await axios.get("http://localhost:3000/nightingale2");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      return [];
+    }
+  };
+
+  // Updated findNearestPointInCity function
+  const findNearestPointInCity = async (
+    cityName: string,
+    allPlaces: IPlaces[]
+  ): Promise<IPlaces | null> => {
+    try {
+      // Fetch the city coordinates from Nominatim API
+      const geocodeResponse = await axios.get(
+        `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+          cityName
+        )}`
+      );
+
+      // Check if coordinates for the city were found
+      if (geocodeResponse.data.length === 0) {
+        alert(`Could not find coordinates for city: ${cityName}`);
+        return null;
+      }
+
+      const cityCoordinates = geocodeResponse.data[0];
+      const cityLatLng = L.latLng(
+        parseFloat(cityCoordinates.lat),
+        parseFloat(cityCoordinates.lon)
+      );
+
+      // Variables to track the nearest place
+      let nearest: IPlaces | null = null;
+      let minDistance = Infinity;
+
+      // Iterate over allPlaces to find the nearest measurement point to the city
+      allPlaces.forEach((place) => {
+        const placeLatLng = L.latLng(place.latitude, place.longitude);
+        const distance = cityLatLng.distanceTo(placeLatLng);
+
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearest = place;
+        }
+      });
+
+      return nearest;
+    } catch (error) {
+      console.error("Error fetching city coordinates:", error);
+      return null;
+    }
+  };
+
+  /// Searches for a city, finds the nearest measurement point among all data points,
+  // and displays it on the map with a popup
+  const handleCitySearch = async () => {
+    setLoading(true);
+    const city = searchValue.trim();
+    if (!city) {
+      setLoading(false);
       return;
     }
 
-    const locationFound = locations.find(
-      (location) => location.country.toLowerCase() === searchValue.toLowerCase()
-    );
+    // Fetch all data points for the search to ensure nearest point isn't missed
+    const allPlaces = await fetchAllDataForSearch();
+    const nearest = await findNearestPointInCity(city, allPlaces);
 
-    if (locationFound) {
-      setSelectedLocation(locationFound);
-      setSearchValue("");
-
+    if (nearest) {
+      setNearestPoint(nearest);
       if (mapRef.current) {
-        mapRef.current.flyTo(locationFound.center, 8);
-        const popup = L.popup();
-        popup.setLatLng(locationFound.center);
+        const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
 
-        const popupContent = `
-        <div>
-          <strong>${locationFound.country}</strong><br />
-          <strong>PM₂.₅:</strong> ${locationFound.data.value.toFixed(2)}<br />
-          <strong>Date:</strong> ${locationFound.data.date}
-        </div> 
-      `;
+        // Fly to the nearest location and display popup
+        mapRef.current.flyTo(nearestLatLng, 10);
+        const popup = L.popup().setLatLng(nearestLatLng).setContent(`
+          <strong>Nearest Measurement Point:</strong><br/>
+          Latitude: ${nearest.latitude.toFixed(
+            2
+          )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+          <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
+          <strong>Date:</strong> ${nearest.date}
+        `);
 
-        popup.setContent(popupContent);
         popup.openOn(mapRef.current);
+
+        // Optionally display this point as an additional marker on the map
+        setPlaces((prevPlaces) => [...prevPlaces, nearest]);
       }
     } else {
-      console.log("Location not found");
-      setSelectedLocation(undefined);
+      alert(`No measurement points found for city: ${city}`);
     }
-  };
-  console.log(germanData);
-
-  const getMarkerColor = (value: number) => {
-    if (value <= 5) return "#71A3FF";
-    if (value <= 10) return "#8EFF44";
-    if (value <= 15) return "#F8FF73";
-    if (value <= 25) return "#FFB24D";
-    if (value <= 35) return "#DE0C4A";
-    if (value <= 50) return "#8F154A";
-    return "#8B4D80";
+    setLoading(false);
   };
 
-  const filteredLocations = locations.filter((location: ILocations) => {
-    if (!location.data) {
-      console.warn(`Location data is undefined for:`, location);
-      return false;
-    }
-    const value = location.data.value;
-    const color = getMarkerColor(value);
+  // Custom control button to locate the user on the map
+  const LocateControl = () => {
+    const map = useMap();
+    return (
+      <button
+        onClick={() => handleLocate(map)}
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 1000,
+        }}
+      >
+        Find Nearest Measurement Point
+      </button>
+    );
+  };
 
-    if (filters.under5 && color === "#71A3FF") return true;
-    if (filters.between5and10 && color === "#8EFF44") return true;
-    if (filters.between10and15 && color === "#F8FF73") return true;
-    if (filters.between15and25 && color === "#FFB24D") return true;
-    if (filters.between25and35 && color === "#DE0C4A") return true;
-    if (filters.between35and50 && color === "#8F154A") return true;
-    if (filters.over50 && color === "#8B4D80") return true;
+  // function to locate the user and make a popup appear
+  const handleLocate = (map: L.Map) => {
+    setLoading(true);
+    map.locate({ setView: false, maxZoom: 10 });
 
-    return false;
-  });
+    map.on("locationfound", (e: L.LocationEvent) => {
+      setUserLocation(e.latlng);
+      const nearest = findNearestPoint(e.latlng);
+      setNearestPoint(nearest);
+
+      if (nearest) {
+        const nearestLatLng = L.latLng(nearest.latitude, nearest.longitude);
+        map.flyTo(nearestLatLng, 10);
+
+        const popup = L.popup();
+        if (popup) {
+          popup.setLatLng(nearestLatLng);
+          popup
+            .setContent(
+              `
+            <strong>Nearest Measurement Point:</strong><br/>
+            Latitude: ${nearest.latitude.toFixed(
+              2
+            )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+            <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
+            <strong>Date:</strong> ${nearest.date}
+          `
+            )
+            .openOn(map);
+        }
+        setLoading(false);
+      }
+    });
+
+    map.on("locationerror", () => {
+      alert("Could not access your location.");
+      setLoading(false);
+    });
+  };
+
+  // Function that finds the nearest measurement point to the user
+  const findNearestPoint = (userLatLng: L.LatLng): IPlaces | null => {
+    let nearest: IPlaces | null = null;
+    let minDistance = Infinity;
+
+    places.forEach((place) => {
+      const placeLatLng = L.latLng(place.latitude, place.longitude);
+      const distance = userLatLng.distanceTo(placeLatLng);
+
+      if (distance < minDistance) {
+        minDistance = distance;
+        nearest = place;
+      }
+    });
+    return nearest;
+  };
 
   return (
     <>
-      <div className="map-container">
-        <h2>POLLUTION MAP</h2>
-
-        <button
-          className="filter-button"
-          onClick={() => setShowSearch(!showSearch)}
-        >
-          Filter{" "}
-          <span className={`arrow ${showSearch ? "arrow-up" : ""}`}></span>
-        </button>
-
-        {showSearch && (
+      <div className="box-container">
+        <div className="map-container">
+          <h2>POLLUTION MAP</h2>
           <div className="search-container">
             <input
-              placeholder="Country"
               type="text"
+              placeholder="Search by city"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
             />
-            <button className="search-button" onClick={handleSearch}>
+            <button className="search-button" onClick={handleCitySearch}>
               Search
             </button>
-            <div className="filter-checkboxes">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.under5}
-                  onChange={() =>
-                    setFilters((prev) => ({ ...prev, under5: !prev.under5 }))
-                  }
-                />
-                <div className="color-indicator color-under-5"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.between5and10}
-                  onChange={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      between5and10: !prev.between5and10,
-                    }))
-                  }
-                />
-                <div className="color-indicator color-between-5-10"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.between10and15}
-                  onChange={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      between10and15: !prev.between10and15,
-                    }))
-                  }
-                />
-                <div className="color-indicator color-between-10-15"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.between15and25}
-                  onChange={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      between15and25: !prev.between15and25,
-                    }))
-                  }
-                />
-                <div className="color-indicator color-between-15-25"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.between25and35}
-                  onChange={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      between25and35: !prev.between25and35,
-                    }))
-                  }
-                />
-                <div className="color-indicator color-between-25-35"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.between35and50}
-                  onChange={() =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      between35and50: !prev.between35and50,
-                    }))
-                  }
-                />
-                <div className="color-indicator color-between-35-50"></div>
-              </label>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={filters.over50}
-                  onChange={() =>
-                    setFilters((prev) => ({ ...prev, over50: !prev.over50 }))
-                  }
-                />
-                <div className="color-indicator color-over-50"></div>
-              </label>
-            </div>
           </div>
-        )}
-        <MapContainer
-          center={[54.526, 15.2551]}
-          zoom={4}
-          scrollWheelZoom={true}
-          ref={mapRef}
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-          {filteredLocations.map((location, index) => (
-            <CircleMarker
-              key={index}
-              center={location.center}
-              radius={1.5}
-              fillColor="transparent"
-              color={getMarkerColor(location.data.value)}
-              weight={9}
-              stroke={true}
+          <div className="map-wrapper">
+            {loading && (
+              <div className="loader-overlay">
+                <Loader />
+              </div>
+            )}
+            <MapContainer
+              center={[33, 10]}
+              zoom={2}
+              scrollWheelZoom={true}
+              ref={mapRef}
             >
-              <Popup>
-                <strong>{location.country}</strong>
-                <br />
-                <strong>PM₂.₅:</strong> {location.data.value.toFixed(2)}{" "}
-                <strong>Date: </strong>
-                {location.data.date}
-              </Popup>
-            </CircleMarker>
-          ))}
+              <TileLayer
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
 
-          {selectedLocation && <MapUpdater center={selectedLocation.center} />}
+              <LocateControl />
 
-          {selectedLocation && (
-            <CircleMarker
-              center={selectedLocation.center}
-              radius={1}
-              fillColor="transparent"
-              color={getMarkerColor(selectedLocation.data.value)}
-              weight={8}
-              stroke={true}
-            >
-              <Popup autoPan={true}>
-                <strong>{selectedLocation.country}</strong>
-                <br />
-                <strong>PM₂.₅:</strong> {selectedLocation.data.value.toFixed(2)}{" "}
-                <strong>Date: </strong>
-                {selectedLocation.data.date}
-              </Popup>
-            </CircleMarker>
-          )}
-        </MapContainer>
+              {places.map((place, index) => (
+                <CircleMarker
+                  key={index}
+                  center={[place.latitude, place.longitude]}
+                  radius={1}
+                  fillColor="transparent"
+                  color={getMarkerColor(place.value)}
+                  weight={5}
+                  stroke={true}
+                >
+                  <Popup>
+                    <strong>{place.country}</strong>
+                    <br />
+                    <p>
+                      <strong>Latitude:</strong> {place.latitude}{" "}
+                      <strong>Longitude:</strong> {place.longitude}
+                    </p>
+                    <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
+                    <strong>Date: </strong>
+                    {place.date}
+                  </Popup>
+                </CircleMarker>
+              ))}
 
-        <img
-          className="grade-image"
-          src="../../src/assets/grade4.png"
-          alt="Scale of PM2.5"
-        />
-        <h3>About PM₂.₅ and Heart disease</h3>
-        <p>
-          PM₂.₅, or fine particulate matter, poses significant health risks,
-          especially concerning cardiovascular diseases. WHO notes that PM₂.₅
-          can deeply penetrate the lungs and bloodstream, leading to
-          inflammation and potentially causing or worsening cardiovascular
-          conditions like atherosclerosis, increasing the risk of heart attacks
-          and strokes.
-          <br />
-          <br />
-          Studies show that both short-term and long-term exposure to PM₂.₅ can
-          increase cardiovascular mortality and the likelihood of acute heart
-          issues in at-risk individuals. Common symptoms of exposure to high air
-          pollution levels include coughing, difficulty breathing, and chest
-          discomfort, which can exacerbate conditions in individuals with
-          existing respiratory or cardiovascular issues.This correlation
-          highlights the importance of reducing air pollution to prevent
-          heart-related health problems and protect public health.
-        </p>
-        <div className="image-container">
+              {nearestPlace && userLocation && (
+                <CircleMarker
+                  center={[nearestPlace.latitude, nearestPlace.longitude]}
+                  radius={5}
+                  fillColor="transparent"
+                  color="#FF0000"
+                  weight={5}
+                  stroke={true}
+                >
+                  <Popup>
+                    <strong>Nearest Measurement Point:</strong>
+                    <br />
+                    Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
+                    {nearestPlace.longitude.toFixed(4)}
+                    <br />
+                    <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
+                    <br />
+                    <strong>Date:</strong> {nearestPlace.date}
+                  </Popup>
+                </CircleMarker>
+              )}
+            </MapContainer>
+          </div>
+
           <img
-            className="pollution-guide-img"
-            src="../../src/assets/pollutionguide3.png"
-            alt="Pollution guide"
+            className="grade-image"
+            src="../../src/assets/grade4.png"
+            alt="Scale of PM2.5"
           />
+
+          <h3>About PM₂.₅ and Heart disease</h3>
+          <p>
+            PM₂.₅, or fine particulate matter, poses significant health risks,
+            especially concerning cardiovascular diseases. WHO notes that PM₂.₅
+            can deeply penetrate the lungs and bloodstream, leading to
+            inflammation and potentially causing or worsening cardiovascular
+            conditions like atherosclerosis, increasing the risk of heart
+            attacks and strokes.
+            <br />
+            <br />
+            Studies show that both short-term and long-term exposure to PM₂.₅
+            can increase cardiovascular mortality and the likelihood of acute
+            heart issues in at-risk individuals. Common symptoms of exposure to
+            high air pollution levels include coughing, difficulty breathing,
+            and chest discomfort, which can exacerbate conditions in individuals
+            with existing respiratory or cardiovascular issues. This correlation
+            highlights the importance of reducing air pollution to prevent
+            heart-related health problems and protect public health.
+          </p>
+
+          <div className="image-container">
+            <img
+              className="pollution-guide-img"
+              src="../../src/assets/pollutionguide3.png"
+              alt="Pollution guide"
+            />
+          </div>
         </div>
       </div>
     </>
