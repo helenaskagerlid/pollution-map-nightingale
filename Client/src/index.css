@@ -191,6 +191,7 @@ button:focus-visible {
   margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
+  position: relative;
 }
 
 .leaflet-container {
@@ -199,6 +200,13 @@ button:focus-visible {
   grid-column: span 5;
   width: calc(100vw - 170px);
   height: calc(100vh - 170px);
+}
+
+.circle-point {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
 }
 
 /* -----------------------  SEARCH FIELD  -----------------------  */
@@ -247,6 +255,13 @@ input {
 
 /* -----------------------  LOADER  -----------------------  */
 
+.loader-para {
+  font-weight: 600;
+  color: white;
+  max-width: fit-content;
+  font-size: 1.3rem;
+}
+
 .loader-overlay {
   position: absolute;
   top: 0;
@@ -257,7 +272,13 @@ input {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.blur-effect {
+  filter: blur(5px);
+  pointer-events: none;
 }
 
 #loader {
@@ -287,7 +308,7 @@ input {
   height: 15px;
   overflow: hidden;
   position: relative;
-  background-color: #587658;
+  background-color: #00ff99;
   animation-name: loader-progress;
   animation-duration: 20s;
   animation-timing-function: cubic-bezier(0.024, 0.9, 0.024, 0.9);

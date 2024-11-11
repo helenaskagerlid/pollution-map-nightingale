@@ -52,10 +52,22 @@ const LineChart: React.FC = () => {
       },
       title: {
         display: true,
-        text: "Air Quality Over Time in Germany",
+        text: "PM2.5 values Over Time in Germany",
         font: {
           size: 30,
         },
+      },
+    },
+    scales: {
+      y: {
+        title: {
+          display: true,
+          text: "PM2.5",
+          font: {
+            size: 18,
+          },
+        },
+        beginAtZero: true,
       },
     },
   };

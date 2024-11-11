@@ -53,7 +53,10 @@ export const PollutionMap = () => {
           Latitude: ${nearest.latitude.toFixed(
             2
           )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-          <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
+          <div>
+          <strong>PM2.5:</strong> ${nearest.value.toFixed(
+            2
+          )}<div class="circle-point" style="background-color: ${getMarkerColor};"></div></div><br/>
           <strong>Date:</strong> ${nearest.date}
         `);
 
@@ -102,19 +105,20 @@ export const PollutionMap = () => {
 
         const popup = L.popup();
         if (popup) {
+          const markerColor = getMarkerColor(nearest.value);
+          const content = `
+          <strong>Nearest Measurement Point:</strong><br/>
+          Latitude: ${nearest.latitude.toFixed(
+            2
+          )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+          
+         <div><strong>PM2.5:</strong> ${nearest.value.toFixed(2)}
+          <div class="circle-point" style="background-color: ${markerColor};"></div></div>
+          <strong>Date:</strong> ${nearest.date}
+        `;
+
           popup.setLatLng(nearestLatLng);
-          popup
-            .setContent(
-              `
-              <strong>Nearest Measurement Point:</strong><br/>
-              Latitude: ${nearest.latitude.toFixed(
-                2
-              )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-              <strong>PM2.5:</strong> ${nearest.value.toFixed(2)}<br/>
-              <strong>Date:</strong> ${nearest.date}
-            `
-            )
-            .openOn(map);
+          popup.setContent(content).openOn(map);
         }
         setLoading(false);
       }
@@ -217,6 +221,7 @@ export const PollutionMap = () => {
               zoom={2}
               scrollWheelZoom={true}
               ref={mapRef}
+              className={loading ? "blur-effect" : ""}
             >
               <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -241,7 +246,13 @@ export const PollutionMap = () => {
                       <strong>Latitude:</strong> {place.latitude}
                       <strong>Longitude:</strong> {place.longitude}
                     </div>
-                    <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
+                    <div>
+                      <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
+                      <div
+                        style={{ backgroundColor: getMarkerColor(place.value) }}
+                        className="circle-point"
+                      ></div>
+                    </div>{" "}
                     <strong>Date: </strong>
                     {place.date}
                   </Popup>
@@ -263,7 +274,15 @@ export const PollutionMap = () => {
                     Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:
                     {nearestPlace.longitude.toFixed(4)}
                     <br />
-                    <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
+                    <div>
+                      <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
+                      <div
+                        style={{
+                          backgroundColor: getMarkerColor(nearestPlace.value),
+                        }}
+                        className="circle-point"
+                      ></div>
+                    </div>
                     <br />
                     <strong>Date:</strong> {nearestPlace.date}
                   </Popup>
