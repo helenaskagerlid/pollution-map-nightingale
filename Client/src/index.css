@@ -35,46 +35,64 @@ a:hover {
   cursor: pointer;
 }
 
-header button a {
-  color: black;
+/* -----------------------  MEDIA QUERIES  -----------------------  */
+
+@media (min-width: 768px) {
+  .box-container {
+    width: calc(100vw - 100px);
+  }
+
+  .search-container {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  input {
+    grid-column: 1 / span 4;
+    margin-left: 35px;
+    margin-right: 55px;
+  }
+
+  .search-button {
+    grid-column: 5 / span 2;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
+
+  p {
+    /* margin: 0 20px 0 20px; */
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .pollution-guide-img {
+    margin: 0 20px 0 20px;
+  }
 }
 
-header button a:hover {
-  color: black;
+@media (min-width: 1024px) {
+  .search-container {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  input {
+    grid-column: 3 / span 5;
+  }
+
+  .search-button {
+    grid-column: 8 / span 2;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-h3 {
-  grid-column: span 5;
-  font-size: 2em;
-  line-height: 1.1;
-}
-
-button {
-  border-radius: 20px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #fdfdfd;
-  color: black;
-  cursor: pointer;
-  transition: border-color 0.25s;
-  max-width: 100%;
-}
-button:hover {
-  border: 1px solid white;
-  box-shadow: rgb(205, 205, 205) 1px 0 10px;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
+/* -----------------------  MEDIA QUERIES / THEME  -----------------------  */
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -95,6 +113,8 @@ button:focus-visible {
   }
 }
 
+/* -----------------------  HEADER  -----------------------  */
+
 header {
   display: flex;
   justify-content: space-between;
@@ -112,51 +132,12 @@ header {
   display: none;
 }
 
-h1 {
-  text-align: center;
-  font-family: "Inria Serif";
+header button a {
+  color: black;
 }
 
-h2 {
-  text-align: center;
-  grid-column: span 5;
-  font-family: "Inria Serif";
-  font-size: 2.7em;
-  line-height: 1.1;
-}
-
-h3 {
-  text-align: center;
-  font-family: "Inria Serif";
-}
-
-p {
-  font-family: "Inria Sans";
-  width: calc(100vw - 100px);
-  margin-bottom: 30px;
-  grid-column: span 5;
-  margin: 0 auto;
-  padding: 0 20px;
-  margin: 10px 0;
-}
-
-.address-content-container {
-  display: flex;
-  margin-left: 30px;
-  display: inline-block;
-}
-
-.chart-container {
-  grid-column: span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  display: grid;
-}
-
-.line-chart {
-  grid-column: span 5;
-  width: calc(100vw - 170px);
-  height: calc(100vw - 170px);
-  margin: 0 auto;
+header button a:hover {
+  color: black;
 }
 
 nav {
@@ -173,6 +154,71 @@ ul {
   margin-right: 10px;
 }
 
+/* -----------------------  HEADINGS  -----------------------  */
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  text-align: center;
+  font-family: "Inria Serif";
+}
+
+h2 {
+  text-align: center;
+  grid-column: span 5;
+  font-family: "Inria Serif";
+  font-size: 2.7em;
+  line-height: 1.1;
+}
+
+h3 {
+  text-align: center;
+  font-family: "Inria Serif";
+  grid-column: span 5;
+  font-size: 2em;
+  line-height: 1.1;
+}
+
+/* -----------------------  PARAGRAPH  -----------------------  */
+
+p {
+  font-family: "Inria Sans";
+  width: calc(100vw - 100px);
+  margin-bottom: 30px;
+  grid-column: span 5;
+  margin: 0 auto;
+  padding: 0 20px;
+  margin: 10px 0;
+}
+
+/* -----------------------  BUTTONS  -----------------------  */
+
+button {
+  border-radius: 20px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #fdfdfd;
+  color: black;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  max-width: 100%;
+}
+
+button:hover {
+  border: 1px solid white;
+  box-shadow: rgb(205, 205, 205) 1px 0 10px;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+/* -----------------------  IMAGES  -----------------------  */
+
 .image-container {
   display: flex;
   align-items: center;
@@ -188,11 +234,7 @@ ul {
   max-width: 500px;
 }
 
-.leaflet-container {
-  width: calc(100vw - 170px);
-  height: calc(100vh - 170px);
-  margin: 0;
-}
+/* -----------------------  POLLUTION MAP PAGE / HOME  -----------------------  */
 
 .grade-image {
   width: calc(100vw - 170px);
@@ -210,16 +252,6 @@ ul {
   background-color: #f4f4f4;
   width: calc(100vw - 100px);
   padding-bottom: 40px;
-}
-
-.about-container {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  margin: 0 auto;
-  /* width: calc(100vw - 100px); */
-  padding-bottom: 40px;
-  grid-column: span 5;
-  text-align: center;
 }
 
 .map-container {
@@ -243,7 +275,11 @@ ul {
   margin: 0;
   padding: 0;
   grid-column: span 5;
+  width: calc(100vw - 170px);
+  height: calc(100vh - 170px);
 }
+
+/* -----------------------  SEARCH FIELD  -----------------------  */
 
 .search-container {
   display: grid;
@@ -285,9 +321,9 @@ input {
   box-shadow: rgb(205, 205, 205) 1px 0 10px;
 }
 
+/* -----------------------  LOADER  -----------------------  */
+
 .loader-overlay {
-  /* grid-column: 2 / span 3;
-  grid-row: 4 / 5; */
   position: absolute;
   top: 0;
   left: 0;
@@ -384,65 +420,33 @@ input {
   }
 }
 
-@media (min-width: 768px) {
-  .box-container {
-    width: calc(100vw - 100px);
-  }
+/* -----------------------  ABOUT PAGE  -----------------------  */
 
-  .search-container {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    align-items: center;
-  }
-
-  input {
-    grid-column: 1 / span 4;
-    margin-left: 35px;
-    margin-right: 55px;
-  }
-
-  .search-button {
-    grid-column: 5 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
-  }
-
-  p {
-    /* margin: 0 20px 0 20px; */
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-
-  .pollution-guide-img {
-    margin: 0 20px 0 20px;
-  }
+.about-container {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0 auto;
+  padding-bottom: 40px;
+  grid-column: span 5;
+  text-align: center;
 }
 
-@media (min-width: 1024px) {
-  .search-container {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: center;
-  }
+/* -----------------------  CHART PAGE  -----------------------  */
 
-  input {
-    grid-column: 3 / span 5;
-  }
-
-  .search-button {
-    grid-column: 8 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
-  }
+.chart-container {
+  grid-column: span 5;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: grid;
 }
 
+.line-chart {
+  grid-column: span 5;
+  width: calc(100vw - 170px);
+  height: calc(100vw - 170px);
+  margin: 0 auto;
+}
 
-
-
-/* CONTACT */
+/* -----------------------  CONTACT PAGE -----------------------  */
 
 .contact-container {
   text-align: left;
@@ -468,86 +472,4 @@ input {
 .about-links:hover {
   color: gray;
   text-decoration: underline;
-}
-
-/*FILTER*/
-
-.filter-container {
-  display: flex;
-}
-
-.filter-button {
-  background-image: linear-gradient(#871919, #b52828);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  border-radius: 0;
-  color: white;
-  padding: 8px 162px;
-}
-
-.filter-button:hover {
-  border: 1px solid white;
-  box-shadow: rgb(205, 205, 205) 1px 0 10px;
-}
-
-.arrow {
-  display: inline-block;
-  margin-left: 5px;
-  border: solid white;
-  border-width: 0 1.5px 1.5px 0;
-  padding: 3px;
-  transform: rotate(45deg);
-  transition: transform 0.2s;
-}
-
-.arrow-up {
-  margin-top: 8px;
-  transform: rotate(-135deg);
-}
-
-
-.color-indicator {
-  width: 20px;
-  height: 20px;
-  border-radius: 3px;
-  margin-right: 8px;
-  display: inline-block;
-}
-
-.color-under-5 {
-  background-color: #71a3ff;
-}
-
-.color-between-5-10 {
-  background-color: #8eff44;
-}
-
-.color-between-10-15 {
-  background-color: #f8ff73;
-}
-
-.color-between-15-25 {
-  background-color: #ffb24d;
-}
-
-.color-between-25-35 {
-  background-color: #de0c4a;
-}
-
-.color-between-35-50 {
-  background-color: #8f154a;
-}
-
-.color-over-50 {
-  background-color: #8b4d80;
-}
-
-input[type="checkbox"] {
-  width: 14px;
-  height: 14px;
-  cursor: pointer;
-  transform: scale(0.8);
-  margin-right: 5px;
 }
