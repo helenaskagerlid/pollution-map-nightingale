@@ -35,84 +35,6 @@ a:hover {
   cursor: pointer;
 }
 
-/* -----------------------  MEDIA QUERIES  -----------------------  */
-
-@media (min-width: 768px) {
-  .box-container {
-    width: calc(100vw - 100px);
-  }
-
-  .search-container {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    align-items: center;
-  }
-
-  input {
-    grid-column: 1 / span 4;
-    margin-left: 35px;
-    margin-right: 55px;
-  }
-
-  .search-button {
-    grid-column: 5 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
-  }
-
-  p {
-    /* margin: 0 20px 0 20px; */
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 0 20px;
-  }
-
-  .pollution-guide-img {
-    margin: 0 20px 0 20px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .search-container {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: center;
-  }
-
-  input {
-    grid-column: 3 / span 5;
-  }
-
-  .search-button {
-    grid-column: 8 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
-  }
-}
-
-/* -----------------------  MEDIA QUERIES / THEME  -----------------------  */
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-
-@media (min-width: 750px) {
-  .header-logo {
-    display: block !important;
-  }
-}
-
 /* -----------------------  HEADER  -----------------------  */
 
 header {
@@ -284,11 +206,11 @@ button:focus-visible {
 .search-container {
   display: grid;
   grid-column: span 5;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(5, minmax(0, 1fr));
 }
 
 input {
-  grid-column: span 4;
+  grid-column: span 5;
   background-color: #e0e0e0;
   margin: 10px;
   height: 35px;
@@ -302,8 +224,10 @@ input {
 }
 
 .search-button {
-  grid-column: 2 / span 2;
+  grid-column: 3 / span 2;
   border-radius: 20px;
+  width: 100px;
+  min-width: 100px;
   border: 1px solid transparent;
   font-size: 1em;
   font-weight: 500;
@@ -339,10 +263,12 @@ input {
 #loader {
   background-color: transparent;
 }
+
 #loader .container {
   top: 30%;
   position: relative;
 }
+
 #loader .progress {
   width: 200px;
   height: 15px;
@@ -354,6 +280,7 @@ input {
   opacity: 0;
   animation: loader-fade 0.7s ease-in-out forwards;
 }
+
 #loader .progress .progress-bar {
   width: 0%;
   max-width: 100%;
@@ -369,6 +296,7 @@ input {
   border-radius: 10px;
   animation-fill-mode: forwards;
 }
+
 #loader .progress .progress-bar .shimmer {
   position: absolute;
   left: -400px;
@@ -380,6 +308,7 @@ input {
   animation-iteration-count: infinite;
   z-index: 10;
 }
+
 #loader .progress .progress-bar .shimmer > div {
   position: absolute;
   width: 400px;
@@ -393,6 +322,7 @@ input {
     rgba(255, 255, 255, 0) 100%
   );
 }
+
 @keyframes loader-progress {
   0% {
     width: 0%;
@@ -472,4 +402,82 @@ input {
 .about-links:hover {
   color: gray;
   text-decoration: underline;
+}
+
+/* -----------------------  MEDIA QUERIES  -----------------------  */
+
+@media (min-width: 768px) {
+  .box-container {
+    width: calc(100vw - 100px);
+  }
+
+  .search-container {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  input {
+    grid-column: 1 / span 4;
+    margin-left: 35px;
+    margin-right: 55px;
+  }
+
+  .search-button {
+    grid-column: 5 / span 2;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
+
+  p {
+    /* margin: 0 20px 0 20px; */
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .pollution-guide-img {
+    margin: 0 20px 0 20px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .search-container {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    align-items: center;
+  }
+
+  input {
+    grid-column: 3 / span 5;
+  }
+
+  .search-button {
+    grid-column: 8 / span 2;
+    margin-left: 30px;
+    margin-right: 50px;
+    margin-top: 10px;
+  }
+}
+
+/* -----------------------  MEDIA QUERIES / THEME  -----------------------  */
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
+
+@media (min-width: 750px) {
+  .header-logo {
+    display: block !important;
+  }
 }
