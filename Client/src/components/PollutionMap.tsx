@@ -237,11 +237,10 @@ export const PollutionMap = () => {
                 >
                   <Popup>
                     <strong>{place.country}</strong>
-                    <br />
-                    <p>
-                      <strong>Latitude:</strong> {place.latitude}{" "}
+                    <div>
+                      <strong>Latitude:</strong> {place.latitude}
                       <strong>Longitude:</strong> {place.longitude}
-                    </p>
+                    </div>
                     <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
                     <strong>Date: </strong>
                     {place.date}
@@ -261,7 +260,7 @@ export const PollutionMap = () => {
                   <Popup>
                     <strong>Nearest Measurement Point:</strong>
                     <br />
-                    Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:{" "}
+                    Latitude: {nearestPlace.latitude.toFixed(4)}, Longitude:
                     {nearestPlace.longitude.toFixed(4)}
                     <br />
                     <strong>PM2.5:</strong> {nearestPlace.value.toFixed(2)}
