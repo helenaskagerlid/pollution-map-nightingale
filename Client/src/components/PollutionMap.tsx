@@ -48,18 +48,21 @@ export const PollutionMap = () => {
 
         // Fly to the nearest location and display popup
         mapRef.current.flyTo(nearestLatLng, 10);
-        const popup = L.popup().setLatLng(nearestLatLng).setContent(`
-          <strong>Nearest Measurement Point:</strong><br/>
-          Latitude: ${nearest.latitude.toFixed(
-            2
-          )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
-          <div>
-          <strong>PM2.5:</strong> ${nearest.value.toFixed(
-            2
-          )}<div class="circle-point" style="background-color: ${getMarkerColor};"></div></div><br/>
-          <strong>Date:</strong> ${nearest.date}
-        `);
+        const popup = L.popup();
+        const markerColor = getMarkerColor(nearest.value);
+        const content = `
+            <strong>Nearest Measurement Point:</strong><br/>
+            Latitude: ${nearest.latitude.toFixed(
+              2
+            )}, Longitude: ${nearest.longitude.toFixed(2)}<br/>
+            
+           <div><strong>PM2.5:</strong> ${nearest.value.toFixed(2)}
+            <div class="circle-point" style="background-color: ${markerColor};"></div></div>
+            <strong>Date:</strong> ${nearest.date}
+          `;
 
+        popup.setLatLng(nearestLatLng);
+        popup.setContent(content);
         popup.openOn(mapRef.current);
 
         // Optionally display this point as an additional marker on the map
