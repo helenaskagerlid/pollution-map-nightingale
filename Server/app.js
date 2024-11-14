@@ -37,4 +37,38 @@ app.get("/nightingale2", (req, res) => {
   });
 });
 
+app.get("/nightingale1", (req, res) => {
+  connection.connect((err) => {
+    if (err) console.log("err", err);
+
+    let query = "SELECT * FROM nightingale1";
+    // let query = "SELECT DISTINCT country FROM nightingale1";
+
+    connection.query(query, (err, data) => {
+      if (err) console.log("err", err);
+
+      console.log("nightingale1", data);
+
+      res.json(data);
+    });
+  });
+});
+
+// app.get("/nightingale1", (req, res) => {
+//   connection.connect((err) => {
+//     if (err) console.log("err", err);
+
+//     let query =
+//       "SELECT * FROM nightingale1 WHERE data >= '2022-12' AND date < '2023-01'";
+
+//     connection.query(query, (err, data) => {
+//       if (err) console.log("err", err);
+
+//       console.log("nightingale1", data);
+
+//       res.json(data);
+//     });
+//   });
+// });
+
 module.exports = app;

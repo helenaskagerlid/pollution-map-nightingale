@@ -5,8 +5,9 @@ import { MapContainer } from "react-leaflet";
 import L from "leaflet";
 import { Loader } from "./Loader";
 import { getMarkerColor } from "../helpers/getMarkerColor";
-import { fetchAllDataForSearch, fetchData } from "../service/fetchData";
 import axios from "axios";
+import { ICountries } from "../models/ICountries";
+import { fetchAllDataForSearch, fetchData } from "../service/fetchData";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -15,8 +16,13 @@ export const PollutionMap = () => {
   const [nearestPlace, setNearestPoint] = useState<ILocations | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
+  const [latestAverageValue, setLatestAverageValue] = useState<
+    ICountries[] | null
+  >(null);
+  const [showAllValues, setShowAllValues] = useState(true);
 
   // fetches data from server and filter the measurment points
+
   useEffect(() => {
     const loadPlaces = async () => {
       setLoading(true);
@@ -24,9 +30,15 @@ export const PollutionMap = () => {
       setPlaces(filteredData);
       setLoading(false);
     };
+
     loadPlaces();
   }, []);
 
+  const handleSwitch = () => {
+    setShowAllValues((prev) => !prev);
+  };
+
+  console.log(setLatestAverageValue);
   /// Searches for a city, finds the nearest measurement point among all data points,
   // and displays it on the map with a popup
   const handleCitySearch = async () => {
@@ -213,6 +225,10 @@ export const PollutionMap = () => {
               Search
             </button>
           </div>
+
+          <button onClick={handleSwitch}>
+            {showAllValues ? "Show Countries latest value" : "Show all values"}
+          </button>
           <div className="map-wrapper">
             {loading && (
               <div className="loader-overlay">
@@ -233,34 +249,69 @@ export const PollutionMap = () => {
 
               <LocateControl />
 
-              {places.map((place, index) => (
-                <CircleMarker
-                  key={index}
-                  center={[place.latitude, place.longitude]}
-                  radius={1}
-                  fillColor="transparent"
-                  color={getMarkerColor(place.value)}
-                  weight={5}
-                  stroke={true}
-                >
-                  <Popup>
-                    <strong>{place.country}</strong>
-                    <div>
-                      <strong>Latitude:</strong> {place.latitude}
-                      <strong>Longitude:</strong> {place.longitude}
-                    </div>
-                    <div>
-                      <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
-                      <div
-                        style={{ backgroundColor: getMarkerColor(place.value) }}
-                        className="circle-point"
-                      ></div>
-                    </div>{" "}
-                    <strong>Date: </strong>
-                    {place.date}
-                  </Popup>
-                </CircleMarker>
-              ))}
+              {showAllValues
+                ? places.map((place, index) => (
+                    <CircleMarker
+                      key={index}
+                      center={[place.latitude, place.longitude]}
+                      radius={1}
+                      fillColor="transparent"
+                      color={getMarkerColor(place.value)}
+                      weight={5}
+                      stroke={true}
+                    >
+                      <Popup>
+                        <strong>{place.country}</strong>
+                        <div>
+                          <strong>Latitude:</strong> {place.latitude}
+                          <strong>Longitude:</strong> {place.longitude}
+                        </div>
+                        <div>
+                          <strong>PM2.5:</strong> {place.value.toFixed(2)}{" "}
+                          <div
+                            style={{
+                              backgroundColor: getMarkerColor(place.value),
+                            }}
+                            className="circle-point"
+                          ></div>
+                        </div>{" "}
+                        <strong>Date: </strong>
+                        {place.date}
+                      </Popup>
+                    </CircleMarker>
+                  ))
+                : latestAverageValue
+                    ?.filter((place) => place.latitude && place.longitude)
+                    .map((place, index) => (
+                      <CircleMarker
+                        key={index}
+                        center={[place.latitude, place.longitude]}
+                        radius={3}
+                        fillColor={getMarkerColor(place.value)}
+                        color={getMarkerColor(place.value)}
+                        weight={5}
+                        stroke={true}
+                      >
+                        <Popup>
+                          <strong>{place.country}</strong>
+                          <div>
+                            <strong>Latitude:</strong> {place.latitude}
+                            <strong>Longitude:</strong> {place.longitude}
+                          </div>
+                          <div>
+                            <strong>PM2.5:</strong> {place.value.toFixed(2)}
+                            <div
+                              style={{
+                                backgroundColor: getMarkerColor(place.value),
+                              }}
+                              className="circle-point"
+                            ></div>
+                          </div>
+                          <strong>Date: </strong>
+                          {place.date}
+                        </Popup>
+                      </CircleMarker>
+                    ))}
 
               {nearestPlace && userLocation && (
                 <CircleMarker
