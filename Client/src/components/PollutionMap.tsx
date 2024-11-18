@@ -7,7 +7,11 @@ import { Loader } from "./Loader";
 import { getMarkerColor } from "../helpers/getMarkerColor";
 import axios from "axios";
 import { ICountries } from "../models/ICountries";
-import { fetchAllDataForSearch, fetchData } from "../service/fetchData";
+import {
+  fetchAllDataForSearch,
+  fetchData,
+  fetchLatestAverageValue,
+} from "../service/fetchData";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -16,9 +20,7 @@ export const PollutionMap = () => {
   const [nearestPlace, setNearestPoint] = useState<ILocations | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [latestAverageValue, setLatestAverageValue] = useState<
-    ICountries[] | null
-  >(null);
+  const [averageValue, setAverageValue] = useState<ICountries[]>([]);
   const [showAllValues, setShowAllValues] = useState(true);
 
   // fetches data from server and filter the measurment points
@@ -34,11 +36,21 @@ export const PollutionMap = () => {
     loadPlaces();
   }, []);
 
-  const handleSwitch = () => {
-    setShowAllValues((prev) => !prev);
+  const handleSwitch = async () => {
+    const nextShowAllValues = !showAllValues;
+    setShowAllValues(nextShowAllValues);
+
+    if (!nextShowAllValues) {
+      setLoading(true);
+      const fetchedValues = await fetchLatestAverageValue();
+      console.log("Hämtad data average value", fetchedValues)
+      setAverageValue(fetchedValues);
+      setLoading(false);
+    }
   };
 
-  console.log(setLatestAverageValue);
+
+
   /// Searches for a city, finds the nearest measurement point among all data points,
   // and displays it on the map with a popup
   const handleCitySearch = async () => {
@@ -229,6 +241,7 @@ export const PollutionMap = () => {
           <button onClick={handleSwitch}>
             {showAllValues ? "Show Countries latest value" : "Show all values"}
           </button>
+
           <div className="map-wrapper">
             {loading && (
               <div className="loader-overlay">
@@ -280,7 +293,7 @@ export const PollutionMap = () => {
                       </Popup>
                     </CircleMarker>
                   ))
-                : latestAverageValue
+                : averageValue
                     ?.filter((place) => place.latitude && place.longitude)
                     .map((place, index) => (
                       <CircleMarker
