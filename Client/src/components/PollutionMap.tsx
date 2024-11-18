@@ -20,7 +20,7 @@ export const PollutionMap = () => {
   const [nearestPlace, setNearestPoint] = useState<ILocations | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [averageValue, setAverageValue] = useState<ICountries[] | null>(null);
+  const [averageValue, setAverageValue] = useState<ICountries[]>([]);
   const [showAllValues, setShowAllValues] = useState(true);
 
   // fetches data from server and filter the measurment points
@@ -40,8 +40,8 @@ export const PollutionMap = () => {
     setShowAllValues((prev) => !prev);
     if (showAllValues) {
       setLoading(true);
-      const fetchedAverageValues = await fetchLatestAverageValue();
-      setAverageValue(fetchedAverageValues);
+      const fetchedValues = await fetchLatestAverageValue();
+      setAverageValue(fetchedValues);
       setLoading(false);
     }
   };
@@ -236,6 +236,7 @@ export const PollutionMap = () => {
           <button onClick={handleSwitch}>
             {showAllValues ? "Show Countries latest value" : "Show all values"}
           </button>
+
           <div className="map-wrapper">
             {loading && (
               <div className="loader-overlay">
