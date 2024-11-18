@@ -8,8 +8,11 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { germanData } from "../data/europe/germanData";
+
 import { Line } from "react-chartjs-2";
+import { useEffect, useState } from "react";
+import { IChartData } from "../models/IChart";
+import { fetchHistoricalValues } from "../service/fetchData";
 
 ChartJS.register(
   CategoryScale,
@@ -21,15 +24,57 @@ ChartJS.register(
   Legend
 );
 
-const labels = germanData.map((data) => data.date);
-const dataValue = germanData.map((data) => data.value);
-
 const LineChart = () => {
+  const [chartData, setChartData] = useState<IChartData[]>([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [countries, setCountries] = useState<string[]>([]);
+  const [filteredData, setFilteredData] = useState<IChartData[]>([]);
+  const [selectedTimePeriod, setSelectedTimePeriod] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchHistoricalValues();
+      setChartData(data);
+
+      const countryNames = Array.from(
+        new Set(data.map((item) => item.country))
+      );
+
+      setCountries(countryNames);
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (selectedCountry) {
+      let filtered = chartData.filter(
+        (data) => data.country === selectedCountry
+      );
+
+      const thisYear = 2022;
+      const baseDate = new Date(thisYear, 0, 1);
+
+      if (selectedTimePeriod === "latestYear") {
+        const latestYear = new Date(baseDate);
+        filtered = filtered.filter(
+          (data) =>
+            new Date(data.date).getFullYear() === latestYear.getFullYear()
+        );
+      }
+      setFilteredData(filtered);
+    } else {
+      setFilteredData([]);
+    }
+  }, [selectedCountry, selectedTimePeriod, chartData]);
+
+  const labels = filteredData.map((data) => data.date);
+  const dataValue = filteredData.map((data) => data.value);
+
   const data = {
     labels: labels,
     datasets: [
       {
-        label: "Air Quality",
+        label: `Air Quality in ${selectedCountry}`,
         data: dataValue,
         fill: false,
         borderColor: "#B52828",
@@ -74,12 +119,32 @@ const LineChart = () => {
   return (
     <>
       <div className="box-container">
+        <select
+          value={selectedCountry}
+          onChange={(e) => setSelectedCountry(e.target.value)}
+        >
+          <option>Country...</option>
+          {countries.map((country) => (
+            <option key={country}>{country}</option>
+          ))}
+        </select>
+        <section>
+          <select
+            value={selectedTimePeriod}
+            onChange={(e) => setSelectedTimePeriod(e.target.value)}
+            disabled={!selectedCountry}
+          >
+            <option value="all">All time periods</option>
+            <option value="latestYear">Latest year (2022)</option>
+          </select>
+        </section>
         <section className="chart-container">
           <div className="line-chart">
             <h2>Chart</h2>
             <Line data={data} options={options} />
           </div>
         </section>
+
       </div>
     </>
   );
