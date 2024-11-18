@@ -29,7 +29,7 @@ const LineChart = () => {
     labels: labels,
     datasets: [
       {
-        label: "Air Quality in Germany",
+        label: "Air Quality",
         data: dataValue,
         fill: false,
         borderColor: "#B52828",
@@ -51,7 +51,7 @@ const LineChart = () => {
       },
       title: {
         display: true,
-        text: "PM2.5 values Over Time in Germany",
+        text: "PM2.5 values Over Time",
         font: {
           size: 30,
         },
