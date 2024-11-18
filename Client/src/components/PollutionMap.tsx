@@ -7,7 +7,11 @@ import { Loader } from "./Loader";
 import { getMarkerColor } from "../helpers/getMarkerColor";
 import axios from "axios";
 import { ICountries } from "../models/ICountries";
-import { fetchAllDataForSearch, fetchData } from "../service/fetchData";
+import {
+  fetchAllDataForSearch,
+  fetchData,
+  fetchLatestAverageValue,
+} from "../service/fetchData";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -16,9 +20,7 @@ export const PollutionMap = () => {
   const [nearestPlace, setNearestPoint] = useState<ILocations | null>(null);
   const [searchValue, setSearchValue] = useState("");
   const [loading, setLoading] = useState(false);
-  const [latestAverageValue, setLatestAverageValue] = useState<
-    ICountries[] | null
-  >(null);
+  const [averageValue, setAverageValue] = useState<ICountries[] | null>(null);
   const [showAllValues, setShowAllValues] = useState(true);
 
   // fetches data from server and filter the measurment points
@@ -34,11 +36,16 @@ export const PollutionMap = () => {
     loadPlaces();
   }, []);
 
-  const handleSwitch = () => {
+  const handleSwitch = async () => {
     setShowAllValues((prev) => !prev);
+    if (showAllValues) {
+      setLoading(true);
+      const fetchedAverageValues = await fetchLatestAverageValue();
+      setAverageValue(fetchedAverageValues);
+      setLoading(false);
+    }
   };
 
-  console.log(setLatestAverageValue);
   /// Searches for a city, finds the nearest measurement point among all data points,
   // and displays it on the map with a popup
   const handleCitySearch = async () => {
@@ -280,13 +287,13 @@ export const PollutionMap = () => {
                       </Popup>
                     </CircleMarker>
                   ))
-                : latestAverageValue
+                : averageValue
                     ?.filter((place) => place.latitude && place.longitude)
                     .map((place, index) => (
                       <CircleMarker
                         key={index}
                         center={[place.latitude, place.longitude]}
-                        radius={3}
+                        radius={2}
                         fillColor={getMarkerColor(place.value)}
                         color={getMarkerColor(place.value)}
                         weight={5}
