@@ -69,4 +69,20 @@ app.get("/nightingaleChart", (req, res) => {
   });
 });
 
+app.get("/nightingaleMap", (req, res) => {
+  connection.connect((err) => {
+    if (err) console.log("err", err);
+
+    let query = "SELECT * FROM nightingaleMap";
+
+    connection.query(query, (err, data) => {
+      if (err) console.log("err", err);
+
+      console.log("nightingaleMap", data);
+
+      res.json(data);
+    });
+  });
+});
+
 module.exports = app;

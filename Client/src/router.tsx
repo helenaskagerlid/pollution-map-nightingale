@@ -5,6 +5,7 @@ import { Home } from "./pages/Home";
 import { About } from "./pages/About";
 import LineChart from "./pages/PollutionChart";
 import { Contact } from "./pages/Contact";
+import { PollutionMapTEST } from "./components/PollutionMapTEST";
 // import { PollutionMapTest } from "./components/PollutionMapTest";
 // import { PollutionTEST } from "./pages/PollutionTEST";
 
@@ -34,10 +35,10 @@ export const router = createBrowserRouter([
       //   path: "/pollutionMapTest",
       //   element: <PollutionMapTest></PollutionMapTest>,
       // },
-      // {
-      //   path: "/pollutionTEST",
-      //   element: <PollutionTEST></PollutionTEST>,
-      // },
+      {
+        path: "/pollutionMapTEST",
+        element: <PollutionMapTEST></PollutionMapTEST>,
+      },
     ],
   },
 ]);

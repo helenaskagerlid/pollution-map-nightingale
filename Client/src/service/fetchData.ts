@@ -3,6 +3,8 @@ import { ILocations } from "../models/ILocations";
 import { ICountries } from "../models/ICountries";
 import { IChartData } from "../models/IChart";
 
+
+
 // fetches data from server and filter the measurment points
 export const fetchData = async (): Promise<ILocations[]> => {
   try {
@@ -48,3 +50,23 @@ export const fetchHistoricalValues = async (): Promise<IChartData[]> => {
     return [];
   }
 };
+
+export const fetchDataForCountries = async (): Promise<{ country: string; value: number }[]> => {
+  try {
+    const response = await axios.get("http://localhost:3000/nightingaleMap");
+    console.log("Hämtad historisk data", response.data);
+
+    // Omvandla och mappa datan till rätt format med 'country' istället för 'countryCode'
+    const formattedData = response.data.map((item: { country: string; value: number }) => ({
+      country: item.country, // Använd 'country' istället för 'countryCode'
+      value: item.value,     // Värde för varje land
+    }));
+
+    return formattedData;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return [];
+  }
+};
+
+
