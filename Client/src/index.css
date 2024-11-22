@@ -425,6 +425,13 @@ input {
   text-decoration: underline;
 }
 
+/* -----------------------  POLLUTION MAP TEST / WORLD MAP  -----------------------  */
+
+.worldmap-container {
+  width: calc(100vw - 100px);
+  text-align: center;
+}
+
 /* -----------------------  MEDIA QUERIES  -----------------------  */
 
 @media (min-width: 768px) {

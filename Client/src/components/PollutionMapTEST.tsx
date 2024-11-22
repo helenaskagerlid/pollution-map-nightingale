@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import WorldMap from "react-svg-worldmap";
-import { fetchDataForCountries } from "../service/fetchData";  // Importera den rätta fetch-funktionen
+import { fetchDataForCountries } from "../service/fetchData"; // Importera den rätta fetch-funktionen
 
 export const PollutionMapTEST = () => {
   const [data, setData] = useState<{ country: string; value: number }[]>([]);
+  const [mapSize, setMapSize] = useState<"sm" | "md" | "lg" | "xl">("lg");
 
   const getMarkerColor = (value: number) => {
     if (value === 0) return "#D3D3D3";
@@ -40,22 +41,49 @@ export const PollutionMapTEST = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width < 576) {
+        setMapSize("sm"); // Liten storlek för väldigt små skärmar
+      } else if (width < 768) {
+        setMapSize("md"); // Medium storlek för mindre skärmar
+      } else if (width < 1024) {
+        setMapSize("lg"); // Stor storlek för vanliga skärmar
+      } else {
+        setMapSize("xl"); // Extra stor karta för stora skärmar
+      }
+    };
+
+    // Lyssna på storleksändringar
+    window.addEventListener("resize", handleResize);
+
+    // Kör en gång när komponenten först renderas
+    handleResize();
+
+    // Rensa upp event listener vid komponentdemontering
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <>
       <div className="box-container">
         <h2>PollutionMapTEST</h2>
-        <WorldMap
-          color="red"
-          value-suffix="pm2.5"
-          size="lg"
-          data={data}
-          styleFunction={styleFunction}
-        />
-        <img
-            className="grade-image"
-            src="../../src/assets/grade4.png"
-            alt="Scale of PM2.5"
+        <div className="worldmap-container">
+          <WorldMap
+            color="red"
+            value-suffix="pm2.5"
+            size={mapSize}
+            data={data}
+            styleFunction={styleFunction}
           />
+        </div>
+
+        <img
+          className="grade-image"
+          src="../../src/assets/grade4.png"
+          alt="Scale of PM2.5"
+        />
       </div>
     </>
   );
