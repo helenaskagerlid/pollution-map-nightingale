@@ -24,9 +24,9 @@ export const Header = () => {
             <li>
               <NavLink to="/chart">Chart</NavLink>
             </li>
-            <li>
+            {/* <li>
               <NavLink to="/maptest">Pollution Map TEST</NavLink>
-            </li>
+            </li> */}
             <li>
               <NavLink to="/pollutionMapTEST">POLLUTION TEST</NavLink>
             </li>
