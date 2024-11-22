@@ -4,7 +4,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 
-const connection = require("./lib/conn");
+const client = require("./lib/conn");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -22,66 +22,54 @@ app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
 app.get("/nightingale2", (req, res) => {
-  connection.connect((err) => {
-    if (err) console.log("err", err);
+  let query = "SELECT * FROM nightingale2";
 
-    let query = "SELECT * FROM nightingale2";
-
-    connection.query(query, (err, data) => {
-      if (err) console.log("err", err);
-
-      console.log("nightingale2", data);
-
-      res.json(data);
-    });
+  client.query(query, (err, data) => {
+    if (err) {
+      console.error("Query error:", err);
+      res.status(500).send("Database query error");
+      return;
+  }
+    res.json(data.rows);
   });
 });
 
 app.get("/nightingale1", (req, res) => {
-  connection.connect((err) => {
-    if (err) console.log("err", err);
+  let query = "SELECT * FROM nightingale1";
 
-    let query = "SELECT * FROM nightingale1";
-
-    connection.query(query, (err, data) => {
-      if (err) console.log("err", err);
-
-      console.log("nightingale1", data);
-
-      res.json(data);
-    });
+  client.query(query, (err, data) => {
+    if (err) {
+      console.error("Query error:", err);
+      res.status(500).send("Database query error");
+      return;
+  }
+    res.json(data.rows);
   });
 });
 
 app.get("/nightingaleChart", (req, res) => {
-  connection.connect((err) => {
-    if (err) console.log("err", err);
+  let query = "SELECT * FROM nightingaleChart";
 
-    let query = "SELECT * FROM nightingaleChart";
-
-    connection.query(query, (err, data) => {
-      if (err) console.log("err", err);
-
-      console.log("nightingaleChart", data);
-
-      res.json(data);
-    });
+  client.query(query, (err, data) => {
+    if (err) {
+      console.error("Query error:", err);
+      res.status(500).send("Database query error");
+      return;
+  }
+    res.json(data.rows);
   });
 });
 
 app.get("/nightingaleMap", (req, res) => {
-  connection.connect((err) => {
-    if (err) console.log("err", err);
+     let query = "SELECT * FROM nightingaleMap";
 
-    let query = "SELECT * FROM nightingaleMap";
-
-    connection.query(query, (err, data) => {
-      if (err) console.log("err", err);
-
-      console.log("nightingaleMap", data);
-
-      res.json(data);
-    });
+    client.query(query, (err, data) => {
+      if (err) {
+        console.error("Query error:", err);
+        res.status(500).send("Database query error");
+        return;
+    }
+      res.json(data.rows);
   });
 });
 
