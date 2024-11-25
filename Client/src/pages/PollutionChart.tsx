@@ -119,25 +119,27 @@ const LineChart = () => {
   return (
     <>
       <div className="box-container">
-        <select
-          value={selectedCountry}
-          onChange={(e) => setSelectedCountry(e.target.value)}
-        >
-          <option>Country...</option>
-          {countries.map((country) => (
-            <option key={country}>{country}</option>
-          ))}
-        </select>
-        <section>
+        <div className="select-wrapper">
           <select
-            value={selectedTimePeriod}
-            onChange={(e) => setSelectedTimePeriod(e.target.value)}
-            disabled={!selectedCountry}
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value)}
           >
-            <option value="all">All time periods</option>
-            <option value="latestYear">Latest year (2022)</option>
+            <option>Country...</option>
+            {countries.map((country) => (
+              <option key={country}>{country}</option>
+            ))}
           </select>
-        </section>
+          <section>
+            <select
+              value={selectedTimePeriod}
+              onChange={(e) => setSelectedTimePeriod(e.target.value)}
+              disabled={!selectedCountry}
+            >
+              <option value="all">All time periods</option>
+              <option value="latestYear">Latest year (2022)</option>
+            </select>
+          </section>
+        </div>
         <section className="chart-container">
           <div className="line-chart">
             <h2>Chart</h2>

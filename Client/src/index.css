@@ -453,6 +453,15 @@ input {
 
 /* -----------------------  CHART PAGE  -----------------------  */
 
+/* .box-container.chart {
+  display: flex;
+  flex-direction: column; 
+  margin: 0 auto;
+  background-color: #f4f4f4;
+  padding-bottom: 40px;
+  gap: 15px;
+} */
+
 .chart-container {
   grid-column: span 5;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -461,9 +470,17 @@ input {
 
 .line-chart {
   grid-column: span 5;
-  width: calc(100vw - 170px);
-  height: calc(100vw - 170px);
+  width: 100%;
+  height: 100%;
+  max-width: 800px;
   margin: 0 auto;
+}
+
+.select-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
 }
 
 select[disabled] {
@@ -473,7 +490,10 @@ select[disabled] {
 }
 
 select {
-  margin: 20px 10px 20px 10px;
+  display: flex;
+  flex-direction: column;  
+  margin-top: 10px;
+  margin-left: 20px;
   padding: 10px 15px;
   font-size: 0.8rem;
   border-radius: 8px;
@@ -482,7 +502,8 @@ select {
   color: #333;
   cursor: pointer;
   transition: border-color 0.3s, background-color 0.3s;
-  width: 100%;
+  width: 100px;
+  height: 35px;
 }
 
 select:focus {
@@ -542,6 +563,21 @@ option:hover {
 @media (min-width: 768px) {
   .box-container {
     width: calc(100vw - 100px);
+  }
+
+  .line-chart {
+    width: 100vw; 
+    height: 100vh; 
+  }
+
+  .select-wrapper {
+    display: flex;
+    flex-direction: row; 
+    justify-content: space-between; 
+  }
+
+  select {
+    width: 180px;
   }
 
   .search-container {
