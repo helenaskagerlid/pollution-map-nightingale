@@ -115,10 +115,10 @@ p {
 
 /* -----------------------  BUTTONS  -----------------------  */
 
-button {
+header button {
   border-radius: 20px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
+  padding: 0.6em 0.6em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
@@ -129,7 +129,7 @@ button {
   max-width: 100%;
 }
 
-button:hover {
+header button:hover {
   border: 1px solid white;
   box-shadow: rgb(205, 205, 205) 1px 0 10px;
 }
@@ -137,6 +137,22 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+.location-button {
+  border-radius: 5px;
+  border: 1px solid transparent;
+  padding: 0.6em 0.6em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #fdfdfd;
+  border: 1.5px solid black;
+  color: black;
+  cursor: pointer;
+  transition: border-color 0.25s;
+  width: 150px;
+  margin-bottom: 20px;
 }
 
 /* -----------------------  IMAGES  -----------------------  */
@@ -212,28 +228,32 @@ button:focus-visible {
 /* -----------------------  SEARCH FIELD  -----------------------  */
 
 .search-container {
-  display: grid;
-  grid-column: span 5;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 10px;
 }
 
 input {
-  grid-column: span 5;
+  flex-grow: 1; 
   background-color: #e0e0e0;
-  margin: 10px;
   height: 35px;
   border: none;
   font-weight: 400;
   font-size: 15px;
   line-height: 30px;
   color: #898989;
-  margin-bottom: 10px;
+  padding: 0 10px; 
   outline: none;
+  margin-left: 10px;
+  display: block;
 }
 
 .search-button {
-  grid-column: 3 / span 2;
   border-radius: 20px;
+  padding: 0.6em 0.6em;
   width: 100px;
   min-width: 100px;
   border: 1px solid transparent;
@@ -251,6 +271,51 @@ input {
 .search-button:hover {
   border: 1px solid white;
   box-shadow: rgb(205, 205, 205) 1px 0 10px;
+}
+
+/* -----------------------  FILTER  -----------------------  */
+
+.filter-container {
+  grid-column: span 5;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.filter-button {
+  margin: 0 auto;
+  background-image: linear-gradient(#871919, #b52828);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  border-radius: 0;
+  color: white;
+  padding: 8px 80px;
+  cursor: pointer;
+}
+
+.filter-button:hover {
+  box-shadow: rgb(205, 205, 205) 1px 0 10px;
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 5px;
+  border: solid white;
+  border-width: 0 1.5px 1.5px 0;
+  padding: 3px;
+  transform: rotate(45deg);
+  transition: transform 0.2s;
+}
+
+.arrow-up {
+  margin-top: 8px;
+  transform: rotate(-135deg);
 }
 
 /* -----------------------  LOADER  -----------------------  */
@@ -440,22 +505,22 @@ input {
   }
 
   .search-container {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    width: 100%;
+    gap: 10px; 
   }
 
   input {
-    grid-column: 1 / span 4;
-    margin-left: 35px;
-    margin-right: 55px;
+    flex-grow: 1;
+    width: 400px;
   }
 
   .search-button {
-    grid-column: 5 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
+    width: 100px;
+    min-width: 100px;
+
   }
 
   p {
@@ -472,20 +537,25 @@ input {
 
 @media (min-width: 1024px) {
   .search-container {
-    display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; 
+    width: 100%;
+    gap: 10px;
   }
 
   input {
-    grid-column: 3 / span 5;
+    flex-grow: 1;
+    width: 500px;
   }
 
   .search-button {
-    grid-column: 8 / span 2;
-    margin-left: 30px;
-    margin-right: 50px;
-    margin-top: 10px;
+    width: 100px;
+    min-width: 100px;
+  }
+
+  .location-button {
+    width: 150px;
   }
 }
 

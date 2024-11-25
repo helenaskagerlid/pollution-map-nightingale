@@ -8,7 +8,7 @@ export const Header = () => {
           {" "}
           <img
             className="header-logo"
-            src="../../public/nightingalelogo.svg"
+            src="/public/nightingalelogo.svg"
             alt="nightingale logo"
           />
         </Link>
@@ -27,9 +27,9 @@ export const Header = () => {
             {/* <li>
               <NavLink to="/maptest">Pollution Map TEST</NavLink>
             </li> */}
-            <li>
+            {/* <li>
               <NavLink to="/pollutionMapTEST">POLLUTION TEST</NavLink>
-            </li>
+            </li> */}
           </ul>
         </nav>
         <button>
