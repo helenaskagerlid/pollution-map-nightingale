@@ -155,6 +155,10 @@ button:focus-visible {
   margin-bottom: 20px;
 }
 
+.location-button:hover {
+  box-shadow: rgb(205, 205, 205) 1px 0 10px;
+}
+
 /* -----------------------  IMAGES  -----------------------  */
 
 .image-container {
