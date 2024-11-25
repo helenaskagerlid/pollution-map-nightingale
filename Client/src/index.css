@@ -147,7 +147,7 @@ button:focus-visible {
   font-weight: 500;
   font-family: inherit;
   background-color: #fdfdfd;
-  border: 1.5px solid black;
+  border: 1.5px solid #a3a3a3;
   color: black;
   cursor: pointer;
   transition: border-color 0.25s;
@@ -194,6 +194,7 @@ button:focus-visible {
   background-color: #f4f4f4;
   width: calc(100vw - 100px);
   padding-bottom: 40px;
+  gap: 15px
 }
 
 .map-container {
@@ -464,6 +465,42 @@ input {
   height: calc(100vw - 170px);
   margin: 0 auto;
 }
+
+select[disabled] {
+  background-color: #f0f0f0;
+  cursor: not-allowed; 
+  opacity: 0.5; 
+}
+
+select {
+  margin: 20px 10px 20px 10px;
+  padding: 10px 15px;
+  font-size: 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #a3a3a3;
+  background-color: #f4f4f4;
+  color: #333;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+  width: 100%;
+}
+
+select:focus {
+  border-color: #b52828;
+  background-color: #fff;
+  outline: none;
+}
+
+option {
+  padding: 10px;
+  font-size: 16px;
+}
+
+option:hover {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
 
 /* -----------------------  CONTACT PAGE -----------------------  */
 

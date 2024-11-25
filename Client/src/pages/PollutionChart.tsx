@@ -144,7 +144,6 @@ const LineChart = () => {
             <Line data={data} options={options} />
           </div>
         </section>
-
       </div>
     </>
   );
