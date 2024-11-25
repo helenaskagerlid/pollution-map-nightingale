@@ -5,7 +5,7 @@
   color-scheme: light dark;
   color: rgba(0, 0, 0, 0.87);
   background-color: #ffffff;
-  background-image: url(./assets/backgroundImg.png);
+  background-image: url(./public/backgroundImg.png);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;

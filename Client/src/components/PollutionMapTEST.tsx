@@ -81,7 +81,7 @@ export const PollutionMapTEST = () => {
 
         <img
           className="grade-image"
-          src="../../src/assets/grade4.png"
+          src="/public/grade4.png"
           alt="Scale of PM2.5"
         />
       </div>
