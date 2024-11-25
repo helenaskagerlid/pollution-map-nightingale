@@ -368,7 +368,7 @@ export const PollutionMap = () => {
 
           <img
             className="grade-image"
-            src="/public/grade4.png"
+            src="/grade4.png"
             alt="Scale of PM2.5"
           />
 
@@ -395,7 +395,7 @@ export const PollutionMap = () => {
           <div className="image-container">
             <img
               className="pollution-guide-img"
-              src="/public/pollutionguide3.png"
+              src="/pollutionguide3.png"
               alt="Pollution guide"
             />
           </div>

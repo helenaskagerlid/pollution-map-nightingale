@@ -8,7 +8,7 @@ export const Header = () => {
           {" "}
           <img
             className="header-logo"
-            src="/public/nightingalelogo.svg"
+            src="/nightingalelogo.svg"
             alt="nightingale logo"
           />
         </Link>
