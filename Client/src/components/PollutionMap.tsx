@@ -246,7 +246,7 @@ export const PollutionMap = () => {
                   </button>
                 </div>
 
-                <button className="location-button" onClick={handleSwitch}>
+                <button className="filter-value-button" onClick={handleSwitch}>
                   {showAllValues ? "Average values" : "All values"}
                 </button>
               </>
