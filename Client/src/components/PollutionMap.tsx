@@ -373,6 +373,13 @@ export const PollutionMap = () => {
             src="/grade4.png"
             alt="Scale of PM2.5"
           />
+                    <div className="image-container">
+            <img
+              className="pollution-guide-img"
+              src="/pollutionguide3.png"
+              alt="Pollution guide"
+            />
+          </div>
 
           <h3>About PM₂.₅ and Heart disease</h3>
           <p>
@@ -393,14 +400,6 @@ export const PollutionMap = () => {
             highlights the importance of reducing air pollution to prevent
             heart-related health problems and protect public health.
           </p>
-
-          <div className="image-container">
-            <img
-              className="pollution-guide-img"
-              src="/pollutionguide3.png"
-              alt="Pollution guide"
-            />
-          </div>
         </div>
       </div>
     </>
