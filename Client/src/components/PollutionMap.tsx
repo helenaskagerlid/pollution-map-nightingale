@@ -12,6 +12,7 @@ import {
   fetchData,
   fetchLatestAverageValue,
 } from "../service/fetchData";
+import { MdLocationPin } from "react-icons/md";
 
 export const PollutionMap = () => {
   const mapRef = useRef<L.Map | null>(null);
@@ -107,6 +108,7 @@ export const PollutionMap = () => {
           zIndex: 1000,
         }}
       >
+        <MdLocationPin className="pin-icon" />
         Find nearest point 
       </button>
     );

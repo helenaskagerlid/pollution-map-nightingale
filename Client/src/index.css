@@ -153,6 +153,8 @@ button:focus-visible {
   transition: border-color 0.25s;
   width: 150px;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
 }
 
 .location-button:hover {
@@ -228,6 +230,11 @@ button:focus-visible {
   width: 10px;
   height: 10px;
   border-radius: 50%;
+}
+
+.pin-icon {
+  font-size: 1.2rem;
+  margin-right: 5px;
 }
 
 /* -----------------------  SEARCH FIELD  -----------------------  */
