@@ -4,7 +4,7 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 
-const client = require("./lib/conn");
+const supabase = require("./supabase");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -16,62 +16,106 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173" }));
 
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 
-app.get("/nightingale2", (req, res) => {
-  let query = "SELECT * FROM nightingale2";
+app.get("/nightingale2", async (req, res) => {
+  const { data, error } = await supabase.from("nightingale2").select("*");
 
-  client.query(query, (err, data) => {
-    if (err) {
-      console.error("Query error:", err);
-      res.status(500).send("Database query error");
-      return;
-    }
-    res.json(data.rows);
-  });
+  if (error) {
+    console.error("Error fetching data:", error);
+    return res.status(500).send("Database query error");
+  }
+
+  res.json(data);
 });
 
-app.get("/nightingale1", (req, res) => {
-  let query = "SELECT * FROM nightingale1";
+app.get("/nightingale1", async (req, res) => {
+  const { data, error } = await supabase.from("nightingale1").select("*");
 
-  client.query(query, (err, data) => {
-    if (err) {
-      console.error("Query error:", err);
-      res.status(500).send("Database query error");
-      return;
-    }
-    res.json(data.rows);
-  });
+  if (error) {
+    console.error("Error fetching data:", error);
+    return res.status(500).send("Database query error");
+  }
+
+  res.json(data);
 });
 
-app.get("/nightingaleChart", (req, res) => {
-  let query = "SELECT * FROM nightingaleChart";
+app.get("/nightingaleChart", async (req, res) => {
+  const { data, error } = await supabase.from("nightingaleChart").select("*");
 
-  client.query(query, (err, data) => {
-    if (err) {
-      console.error("Query error:", err);
-      res.status(500).send("Database query error");
-      return;
-    }
-    res.json(data.rows);
-  });
+  if (error) {
+    console.error("Error fetching data:", error);
+    return res.status(500).send("Database query error");
+  }
+
+  res.json(data);
 });
 
-app.get("/nightingaleMap", (req, res) => {
-  let query = "SELECT * FROM nightingaleMap";
+app.get("/nightingaleMap", async (req, res) => {
+  const { data, error } = await supabase.from("nightingaleMap").select("*");
 
-  client.query(query, (err, data) => {
-    if (err) {
-      console.error("Query error:", err);
-      res.status(500).send("Database query error");
-      return;
-    }
-    res.json(data.rows);
-  });
+  if (error) {
+    console.error("Error fetching data:", error);
+    return res.status(500).send("Database query error");
+  }
+
+  res.json(data);
 });
+
+// app.get("/nightingale2", (req, res) => {
+//   let query = "SELECT * FROM nightingale2";
+
+//   client.query(query, (err, data) => {
+//     if (err) {
+//       console.error("Query error:", err);
+//       res.status(500).send("Database query error");
+//       return;
+//     }
+//     res.json(data.rows);
+//   });
+// });
+
+// app.get("/nightingale1", (req, res) => {
+//   let query = "SELECT * FROM nightingale1";
+
+//   client.query(query, (err, data) => {
+//     if (err) {
+//       console.error("Query error:", err);
+//       res.status(500).send("Database query error");
+//       return;
+//     }
+//     res.json(data.rows);
+//   });
+// });
+
+// app.get("/nightingaleChart", (req, res) => {
+//   let query = "SELECT * FROM nightingaleChart";
+
+//   client.query(query, (err, data) => {
+//     if (err) {
+//       console.error("Query error:", err);
+//       res.status(500).send("Database query error");
+//       return;
+//     }
+//     res.json(data.rows);
+//   });
+// });
+
+// app.get("/nightingaleMap", (req, res) => {
+//   let query = "SELECT * FROM nightingaleMap";
+
+//   client.query(query, (err, data) => {
+//     if (err) {
+//       console.error("Query error:", err);
+//       res.status(500).send("Database query error");
+//       return;
+//     }
+//     res.json(data.rows);
+//   });
+// });
 
 module.exports = app;
 
