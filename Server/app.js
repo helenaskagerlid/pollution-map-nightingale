@@ -80,5 +80,4 @@ app.get("/nightingaleMap", (req, res) => {
     });
   });
 });
-
 module.exports = app;

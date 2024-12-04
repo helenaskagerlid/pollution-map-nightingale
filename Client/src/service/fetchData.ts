@@ -20,6 +20,7 @@ export const fetchData = async (): Promise<ILocations[]> => {
 export const fetchAllDataForSearch = async (): Promise<ILocations[]> => {
   try {
     const response = await axios.get("http://localhost:3000/nightingale2");
+    console.log("Hämtad data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
