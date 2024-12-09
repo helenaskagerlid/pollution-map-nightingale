@@ -109,7 +109,7 @@ export const PollutionMap = () => {
         }}
       >
         <MdLocationPin className="pin-icon" />
-        Find nearest point 
+        Find nearest point
       </button>
     );
   };
@@ -273,9 +273,9 @@ export const PollutionMap = () => {
               <LocateControl />
 
               {showAllValues
-                ? places.map((place, index) => (
+                ? places.map((place) => (
                     <CircleMarker
-                      key={index}
+                      key={`${place.latitude}-${place.longitude}-${showAllValues}`} // <--- Se här
                       center={[place.latitude, place.longitude]}
                       radius={1}
                       fillColor="transparent"
@@ -305,9 +305,9 @@ export const PollutionMap = () => {
                   ))
                 : averageValue
                     ?.filter((place) => place.latitude && place.longitude)
-                    .map((place, index) => (
+                    .map((place) => (
                       <CircleMarker
-                        key={index}
+                        key={`${place.latitude}-${place.longitude}-${showAllValues}`} // <--- Se här
                         center={[place.latitude, place.longitude]}
                         radius={2}
                         fillColor={getMarkerColor(place.value)}
@@ -368,12 +368,8 @@ export const PollutionMap = () => {
             </MapContainer>
           </div>
 
-          <img
-            className="grade-image"
-            src="/grade4.png"
-            alt="Scale of PM2.5"
-          />
-                    <div className="image-container">
+          <img className="grade-image" src="/grade4.png" alt="Scale of PM2.5" />
+          <div className="image-container">
             <img
               className="pollution-guide-img"
               src="/pollutionguide3.png"
