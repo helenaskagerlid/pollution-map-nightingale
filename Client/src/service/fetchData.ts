@@ -8,7 +8,7 @@ export const fetchData = async (): Promise<ILocations[]> => {
   try {
     const response = await axios.get("http://localhost:3000/nightingale2");
     return response.data.filter(
-      (_: ILocations, index: number) => index % 1000 === 0
+      (_: ILocations, index: number) => index % 1 === 0
     );
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -20,7 +20,6 @@ export const fetchData = async (): Promise<ILocations[]> => {
 export const fetchAllDataForSearch = async (): Promise<ILocations[]> => {
   try {
     const response = await axios.get("http://localhost:3000/nightingale2");
-    console.log("Hämtad data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -31,7 +30,6 @@ export const fetchAllDataForSearch = async (): Promise<ILocations[]> => {
 export const fetchLatestAverageValue = async (): Promise<ICountries[]> => {
   try {
     const response = await axios.get("http://localhost:3000/nightingale1");
-    console.log("Hämtad data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -42,7 +40,6 @@ export const fetchLatestAverageValue = async (): Promise<ICountries[]> => {
 export const fetchHistoricalValues = async (): Promise<IChartData[]> => {
   try {
     const response = await axios.get("http://localhost:3000/nightingaleChart");
-    console.log("Hämtad historisk data", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -55,13 +52,11 @@ export const fetchDataForCountries = async (): Promise<
 > => {
   try {
     const response = await axios.get("http://localhost:3000/nightingaleMap");
-    console.log("Hämtad historisk data", response.data);
 
-    // Omvandla och mappa datan till rätt format med 'country' istället för 'countryCode'
     const formattedData = response.data.map(
       (item: { country: string; value: number }) => ({
-        country: item.country, // Använd 'country' istället för 'countryCode'
-        value: item.value, // Värde för varje land
+        country: item.country,
+        value: item.value,
       })
     );
 

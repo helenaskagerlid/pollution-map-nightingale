@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import WorldMap from "react-svg-worldmap";
-import { fetchDataForCountries } from "../service/fetchData"; // Importera den rätta fetch-funktionen
+import { fetchDataForCountries } from "../service/fetchData";
 
 export const PollutionMapTEST = () => {
   const [data, setData] = useState<{ country: string; value: number }[]>([]);
@@ -18,13 +18,10 @@ export const PollutionMapTEST = () => {
   };
 
   const styleFunction = (countryInfo: { countryCode: string }) => {
-    // hitta data för det land som motsvarar den aktuella landskoden (ISO alpha 2-koden)
     const countryData = data.find(
-      (item) => item.country === countryInfo.countryCode // Jämför landskoden från context med landskoden i data
+      (item) => item.country === countryInfo.countryCode
     );
-    // Om landet hittas i data, använd dess värde, annars sätt värdet till 0
     const value = countryData ? countryData.value : 0;
-    //returnerar stilen för länderna
     return {
       fill: getMarkerColor(value),
       stroke: "black",
@@ -45,23 +42,20 @@ export const PollutionMapTEST = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       if (width < 576) {
-        setMapSize("sm"); // Liten storlek för väldigt små skärmar
+        setMapSize("sm");
       } else if (width < 768) {
-        setMapSize("md"); // Medium storlek för mindre skärmar
+        setMapSize("md");
       } else if (width < 1024) {
-        setMapSize("lg"); // Stor storlek för vanliga skärmar
+        setMapSize("lg");
       } else {
-        setMapSize("xl"); // Extra stor karta för stora skärmar
+        setMapSize("xl");
       }
     };
 
-    // Lyssna på storleksändringar
     window.addEventListener("resize", handleResize);
 
-    // Kör en gång när komponenten först renderas
     handleResize();
 
-    // Rensa upp event listener vid komponentdemontering
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
