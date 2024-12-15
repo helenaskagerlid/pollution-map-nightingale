@@ -65,6 +65,7 @@ header button a:hover {
 nav {
   display: flex;
   justify-content: flex-end;
+  font-size: 1.1em;
 }
 
 ul {
@@ -119,7 +120,7 @@ header button {
   border-radius: 20px;
   border: 1px solid transparent;
   padding: 0.6em 0.6em;
-  font-size: 1em;
+  font-size: 1.1em;
   font-weight: 500;
   font-family: inherit;
   background-color: #fdfdfd;
@@ -216,7 +217,7 @@ button:focus-visible {
   background-color: #f4f4f4;
   width: calc(100vw - 100px);
   padding-bottom: 40px;
-  gap: 15px
+  gap: 15px;
 }
 
 .map-container {
@@ -269,7 +270,7 @@ button:focus-visible {
 }
 
 input {
-  flex-grow: 1; 
+  flex-grow: 1;
   background-color: #e0e0e0;
   height: 35px;
   border: none;
@@ -277,7 +278,7 @@ input {
   font-size: 15px;
   line-height: 30px;
   color: #898989;
-  padding: 0 10px; 
+  padding: 0 10px;
   outline: none;
   display: block;
 }
@@ -512,13 +513,13 @@ input {
 
 select[disabled] {
   background-color: #f0f0f0;
-  cursor: not-allowed; 
-  opacity: 0.5; 
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 select {
   display: flex;
-  flex-direction: column;  
+  flex-direction: column;
   margin-top: 10px;
   margin-left: 20px;
   padding: 10px 15px;
@@ -548,7 +549,6 @@ option:hover {
   background-color: #f0f0f0;
   color: #333;
 }
-
 
 /* -----------------------  CONTACT PAGE -----------------------  */
 
@@ -593,14 +593,14 @@ option:hover {
   }
 
   .line-chart {
-    width: 100vw; 
-    height: 100vh; 
+    width: 100vw;
+    height: 100vh;
   }
 
   .select-wrapper {
     display: flex;
-    flex-direction: row; 
-    justify-content: space-between; 
+    flex-direction: row;
+    justify-content: space-between;
   }
 
   select {
@@ -610,9 +610,9 @@ option:hover {
   .search-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between; 
+    justify-content: space-between;
     width: 100%;
-    gap: 10px; 
+    gap: 10px;
   }
 
   input {
@@ -623,7 +623,6 @@ option:hover {
   .search-button {
     width: 100px;
     min-width: 100px;
-
   }
 
   p {
@@ -642,7 +641,7 @@ option:hover {
   .search-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between; 
+    justify-content: space-between;
     width: 100%;
     gap: 10px;
   }

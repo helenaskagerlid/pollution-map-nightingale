@@ -23,7 +23,7 @@ export const PollutionMap = () => {
   const [loading, setLoading] = useState(false);
   const [averageValue, setAverageValue] = useState<ICountries[]>([]);
   const [showAllValues, setShowAllValues] = useState(true);
-  const [showSearch, setShowSearch] = useState(false);
+  // const [showSearch, setShowSearch] = useState(false);
 
   // fetches data from server and filter the measurment points
   useEffect(() => {
@@ -225,32 +225,21 @@ export const PollutionMap = () => {
         <div className="map-container">
           <h2>POLLUTION MAP</h2>
           <div className="filter-container">
-            <button
-              className="filter-button"
-              onClick={() => setShowSearch(!showSearch)}
-            >
-              Filter
-              <span className={`arrow ${showSearch ? "arrow-up" : ""}`}></span>
-            </button>
-            {showSearch && (
-              <>
-                <div className="search-container">
-                  <input
-                    type="text"
-                    placeholder="Search by city"
-                    value={searchValue}
-                    onChange={(e) => setSearchValue(e.target.value)}
-                  />
-                  <button className="search-button" onClick={handleCitySearch}>
-                    Search
-                  </button>
-                </div>
+            <div className="search-container">
+              <input
+                type="text"
+                placeholder="Search by city"
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+              <button className="search-button" onClick={handleCitySearch}>
+                Search
+              </button>
+            </div>
 
-                <button className="filter-value-button" onClick={handleSwitch}>
-                  {showAllValues ? "Average values" : "All values"}
-                </button>
-              </>
-            )}
+            <button className="filter-value-button" onClick={handleSwitch}>
+              {showAllValues ? "Country average" : "All points"}
+            </button>
           </div>
           <div className="map-wrapper">
             {loading && (
