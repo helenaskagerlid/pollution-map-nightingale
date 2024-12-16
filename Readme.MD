@@ -3,6 +3,7 @@
 A full-stack application that displays pollution data on an interactive map. This project has a **frontend** built with React and Leaflet and a **backend** built with Express.js, with data stored in a MySQL database.
 
 ## Table of Contents
+
 1. [Project Structure](#project-structure)
 2. [Technologies](#technologies)
 3. [Features](#features)
@@ -16,26 +17,26 @@ A full-stack application that displays pollution data on an interactive map. Thi
 ---
 
 ## Project Structure
+
 ```
 project-root/
 ├── Client/
 │   ├── public/
 │   │   ├── nightingalelogo.svg
+│   │   ├── backgroundImg.png
+│   │   ├── fav-icon.svg
+│   │   ├── grade4.png
+│   │   ├── pollutionguide3.png
+│   │   ├── vite.svg
 │   ├── src/
-│   │   ├── assets/
-│   │   │   ├── backgroundImg.png
-│   │   │   ├── grade4.png
-│   │   │   ├── pollutionguide3.png 
 │   │   ├── components/
-|   |   |   ├── icons/ 
+|   |   |   ├── icons/
 |   |   |   |   ├── AddressIcon.tsx
 |   |   |   |   ├── LinkedInIcon.tsx
 |   |   |   |   ├── MailIcon.tsx
 │   │   │   ├── Header.tsx
 │   │   │   ├── Loader.tsx
-│   │   │   ├── LocateControl.tsx
 │   │   │   ├── PollutionMap.tsx
-│   │   │   ├── findNearestPoint.ts
 │   │   ├── pages/
 │   │   │   ├── Layout.tsx
 │   │   │   ├── About.tsx
@@ -47,6 +48,8 @@ project-root/
 │   │   │   ├── getMarkerColor.ts
 │   │   ├── models/
 │   │   │   ├── ILocations.ts
+│   │   │   ├── IChart.ts
+│   │   │   ├── ICountries.ts
 │   │   ├── service/
 │   │   │   ├── fetchData.ts
 │   │   ├── App.tsx
@@ -78,14 +81,16 @@ project-root/
 ---
 
 ## Features
+
 - **Pollution Data Visualization:** Pollution data points displayed on a map.
 - **Locate Nearest Measurement Point:** Centers the map on the user's nearest pollution data point.
 - **Full-Stack Integration:** Data stored in MySQL and served through an Express API.
-- **Filtering and Search Options:** The user can filter and search for specific pollution levels or locations.
+- **Search Options:** The user can search for specific locations.
 
 ---
 
 ## Installation
+
 ##### Clone the Repository:
 
 - git clone <https://github.com/helenaskagerlid/pollution-map-nightingale>
@@ -111,6 +116,7 @@ Open MAMP and start MySQL servers.
 **Database name:** nightingale2
 
 **Table structure:**
+
 ```
 CREATE TABLE nightingale2 (
   country VARCHAR(128),
@@ -140,15 +146,18 @@ module.exports = connection;
 ---
 
 ## Running the Application
+
 #### Start Backend Server:
 
 **In a new terminal window:**
+
 - cd Server
 - nodemon start
 
 #### Start Frontend Development Server:
 
 **Open another terminal window:**
+
 - cd Client
 - npm run dev
 
@@ -159,21 +168,26 @@ Open a browser and go to http://localhost:3000 for the backend and http://localh
 ---
 
 ## Components Overview
-1. **PollutionMapTest Component**
+
+1. **PollutionMap Component**
+
 - Displays pollution data on an interactive map using React-Leaflet.
 - Fetches pollution data via axios from the /nightingale2 endpoint.
 - Includes a button that finds and centers on the nearest measurement point to the user.
+
 2. **Header Component**
-A navigation bar allowing users to access different parts of the application, including Home, About, and the Pollution Map.
+   A navigation bar allowing users to access different parts of the application, including Home, About, and the Pollution Map.
 3. **Layout Component**
-Wraps the main content and includes the Header and Outlet components for routing.
+   Wraps the main content and includes the Header and Outlet components for routing.
 
 ---
 
 ## API Endpoints
+
 **GET /nightingale2**
 Fetches pollution data from the nightingale2 table in MySQL.
 Example Response:
+
 ```
 [
   {
@@ -190,5 +204,6 @@ Example Response:
 ---
 
 ## Styling
+
 **Fonts:** Uses Google Fonts (Inria Sans and Inria Serif).
 **Color Scheme:** Light theme with specific color indicators for pollution levels based on PM2.5 values.
