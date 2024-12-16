@@ -262,9 +262,9 @@ export const PollutionMap = () => {
               <LocateControl />
 
               {showAllValues
-                ? places.map((place) => (
+                ? places.map((place, index) => (
                     <CircleMarker
-                      key={`${place.latitude}-${place.longitude}-${showAllValues}`} // <--- Se här
+                      key={`${place.latitude}-${place.longitude}-${index}`}
                       center={[place.latitude, place.longitude]}
                       radius={1}
                       fillColor="transparent"
@@ -296,7 +296,7 @@ export const PollutionMap = () => {
                     ?.filter((place) => place.latitude && place.longitude)
                     .map((place) => (
                       <CircleMarker
-                        key={`${place.latitude}-${place.longitude}-${showAllValues}`} // <--- Se här
+                        key={`${place.latitude}-${place.longitude}-${place.value}-${place.date}`}
                         center={[place.latitude, place.longitude]}
                         radius={2}
                         fillColor={getMarkerColor(place.value)}
