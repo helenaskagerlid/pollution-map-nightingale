@@ -51,14 +51,15 @@ const LineChart = () => {
         (data) => data.country === selectedCountry
       );
 
-      const thisYear = 2022;
-      const baseDate = new Date(thisYear, 0, 1);
-
       if (selectedTimePeriod === "latestYear") {
-        const latestYear = new Date(baseDate);
+        const startDate = new Date(2021, 11, 1); 
+        const endDate = new Date(2022, 11, 31);
+      
         filtered = filtered.filter(
-          (data) =>
-            new Date(data.date).getFullYear() === latestYear.getFullYear()
+          (data) => {
+            const dataDate = new Date(data.date);
+            return dataDate >= startDate && dataDate <= endDate;
+          }
         );
       }
       setFilteredData(filtered);
