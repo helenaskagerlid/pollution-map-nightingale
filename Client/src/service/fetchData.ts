@@ -6,7 +6,7 @@ import { IChartData } from "../models/IChart";
 // fetches data from server and filter the measurment points
 export const fetchData = async (): Promise<ILocations[]> => {
   try {
-    const response = await axios.get("http://localhost:3000/nightingale2");
+    const response = await axios.get("https://healthmap.uni-mainz.de/nightingale2");
     return response.data.filter(
       (_: ILocations, index: number) => index % 1 === 0
     );
@@ -19,7 +19,7 @@ export const fetchData = async (): Promise<ILocations[]> => {
 // Fetches all data points without filtering for use in searches
 export const fetchAllDataForSearch = async (): Promise<ILocations[]> => {
   try {
-    const response = await axios.get("http://localhost:3000/nightingale2");
+    const response = await axios.get("https://healthmap.uni-mainz.de/nightingale2");
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -29,7 +29,7 @@ export const fetchAllDataForSearch = async (): Promise<ILocations[]> => {
 
 export const fetchLatestAverageValue = async (): Promise<ICountries[]> => {
   try {
-    const response = await axios.get("http://localhost:3000/nightingale1");
+    const response = await axios.get("https://healthmap.uni-mainz.de/nightingale2");
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -39,7 +39,7 @@ export const fetchLatestAverageValue = async (): Promise<ICountries[]> => {
 
 export const fetchHistoricalValues = async (): Promise<IChartData[]> => {
   try {
-    const response = await axios.get("http://localhost:3000/nightingaleChart");
+    const response = await axios.get("https://healthmap.uni-mainz.de/nightingale2");
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -51,7 +51,7 @@ export const fetchDataForCountries = async (): Promise<
   { country: string; value: number }[]
 > => {
   try {
-    const response = await axios.get("http://localhost:3000/nightingaleMap");
+    const response = await axios.get("https://healthmap.uni-mainz.de/nightingale2");
 
     const formattedData = response.data.map(
       (item: { country: string; value: number }) => ({
